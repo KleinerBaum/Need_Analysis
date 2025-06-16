@@ -79,6 +79,21 @@ def save_fields_to_session(fields: Dict[str, str]) -> None:
     st.session_state.setdefault("job_fields", {}).update(fields)
 
 
+def display_fields_summary() -> None:
+    """Show extracted fields as two-line bullet points."""
+
+    fields = st.session_state.get("job_fields", {})
+    lang = st.session_state.get("lang", "de")
+
+    st.markdown(tr("### Extrahierte Jobdaten / Extracted Job Info", lang))
+    st.markdown("<style>.field-bullet{font-size:16px;}</style>", unsafe_allow_html=True)
+    for key, value in fields.items():
+        st.markdown(
+            f"- **{key.replace('_', ' ').title()}**<br>{value}",
+            unsafe_allow_html=True,
+        )
+
+
 def display_fields_editable(prefix: str = "edit_") -> None:
     """Show all stored fields as editable inputs.
 

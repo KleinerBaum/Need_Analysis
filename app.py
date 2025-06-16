@@ -7,7 +7,6 @@ import streamlit as st
 from utils.utils_jobinfo import (
     display_all_fields_multiline_copy,
     display_fields_editable,
-    export_fields_as_markdown,
 )
 from utils.i18n import tr
 from wizard_steps import (
@@ -83,13 +82,14 @@ wizard_steps[step_idx][1]()
 
 # --- Utility-Optionen nach dem Wizard ------------------------------------
 st.markdown("---")
-st.header(tr("Extras & Export", lang))
-st.subheader(tr("1. Editierbare Felder / Editable Fields", lang))
-display_fields_editable()
-st.subheader(tr("2. Export als Markdown", lang))
-export_fields_as_markdown()
-st.subheader(tr("3. Mehrzeilige Ansicht (Copy & Paste)", lang))
-display_all_fields_multiline_copy()
+with st.expander(tr("Extras & Export", lang), expanded=False):
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader(tr("1. Editierbare Felder / Editable Fields", lang))
+        display_fields_editable()
+    with col2:
+        st.subheader(tr("3. Mehrzeilige Ansicht (Copy & Paste)", lang))
+        display_all_fields_multiline_copy()
 
 if st.checkbox(tr("Session State anzeigen / Show Session State [DEV]", lang)):
     st.write(st.session_state)
