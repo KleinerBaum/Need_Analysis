@@ -133,6 +133,8 @@ def display_fields_summary() -> None:
     st.markdown(tr("### Extrahierte Jobdaten / Extracted Job Info", lang))
     st.markdown("<style>.field-bullet{font-size:16px;}</style>", unsafe_allow_html=True)
     for key, value in fields.items():
+        if not value:
+            continue
         st.markdown(
             f"- **{key.replace('_', ' ').title()}**<br>{value}",
             unsafe_allow_html=True,
@@ -154,6 +156,8 @@ def display_fields_editable(prefix: str = "edit_") -> None:
 
     st.markdown(tr("### Extrahierte Jobdaten / Extracted Job Info", lang))
     for key, value in fields.items():
+        if not value:
+            continue
         widget_key = f"{prefix}{key}"
         if widget_key in used_keys:
             suffix = 1
@@ -169,7 +173,7 @@ def export_fields_as_markdown() -> None:
     fields = st.session_state.get("job_fields", {})
     lang = st.session_state.get("lang", "de")
     md = "\n".join(
-        f"**{k.replace('_', ' ').capitalize()}:** {v}" for k, v in fields.items()
+        f"**{k.replace('_', ' ').capitalize()}:** {v}" for k, v in fields.items() if v
     )
     b64 = base64.b64encode(md.encode()).decode()
     href = (
@@ -185,4 +189,6 @@ def display_all_fields_multiline_copy() -> None:
     lang = st.session_state.get("lang", "de")
     st.markdown(tr("### Alle Felder / All Fields", lang))
     for key, value in fields.items():
+        if not value:
+            continue
         st.text_area(key.replace("_", " ").title(), value, key=f"multi_{key}")
