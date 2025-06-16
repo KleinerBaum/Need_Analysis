@@ -11,7 +11,11 @@ from utils.utils_jobinfo import (
     save_fields_to_session,
 )
 from utils.i18n import tr
-from utils.esco_client import search_skills
+from utils.esco_client import (
+    search_skills,
+    get_skills_for_job_title,
+    get_tasks_for_job_title,
+)
 import requests
 
 
@@ -210,6 +214,11 @@ def wizard_step_5_tasks() -> None:
     """Step 5: tasks and responsibilities."""
     lang = st.session_state.get("lang", "de")
     fields = st.session_state.get("job_fields", {})
+    if fields.get("job_title") and not fields.get("task_list"):
+        tasks = get_tasks_for_job_title(fields["job_title"], language=lang, limit=5)
+        if tasks:
+            fields["task_list"] = "\n".join(tasks)
+            st.info(tr("Aufgaben von ESCO importiert", lang))
     st.header(tr("5. Aufgaben & Verantwortlichkeiten / Tasks & Responsibilities", lang))
     display_fields_summary()
     fields["task_list"] = st.text_area(
@@ -261,6 +270,11 @@ def wizard_step_6_skills() -> None:
     """Step 6: required skills."""
     lang = st.session_state.get("lang", "de")
     fields = st.session_state.get("job_fields", {})
+    if fields.get("job_title") and not fields.get("must_have_skills"):
+        skills = get_skills_for_job_title(fields["job_title"], language=lang, limit=5)
+        if skills:
+            fields["must_have_skills"] = ", ".join(skills)
+            st.info(tr("Skills von ESCO importiert", lang))
     st.header(tr("6. Skills & Kompetenzen / Skills & Competencies", lang))
     skill_query = st.text_input(
         tr("Skill bei ESCO suchen / Search skill in ESCO", lang)
