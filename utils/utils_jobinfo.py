@@ -7,6 +7,8 @@ import base64
 import re
 from typing import Dict, Optional
 
+from utils.i18n import tr
+
 import docx
 import fitz  # PyMuPDF
 import streamlit as st
@@ -78,7 +80,8 @@ def save_fields_to_session(fields: Dict[str, str]) -> None:
 def display_fields_editable() -> None:
     """Show all stored fields as editable inputs."""
     fields = st.session_state.get("job_fields", {})
-    st.markdown("### Extrahierte Jobdaten / Extracted Job Info")
+    lang = st.session_state.get("lang", "de")
+    st.markdown(tr("### Extrahierte Jobdaten / Extracted Job Info", lang))
     for key, value in fields.items():
         st.text_input(key.replace("_", " ").title(), value, key=f"edit_{key}")
 
@@ -86,13 +89,14 @@ def display_fields_editable() -> None:
 def export_fields_as_markdown() -> None:
     """Provide a download link for the stored fields as Markdown."""
     fields = st.session_state.get("job_fields", {})
+    lang = st.session_state.get("lang", "de")
     md = "\n".join(
         f"**{k.replace('_', ' ').capitalize()}:** {v}" for k, v in fields.items()
     )
     b64 = base64.b64encode(md.encode()).decode()
     href = (
         f'<a href="data:text/markdown;base64,{b64}" download="jobinfo.md">'
-        "Markdown herunterladen / Download Markdown</a>"
+        f"{tr('Markdown herunterladen / Download Markdown', lang)}</a>"
     )
     st.markdown(href, unsafe_allow_html=True)
 
@@ -100,6 +104,7 @@ def export_fields_as_markdown() -> None:
 def display_all_fields_multiline_copy() -> None:
     """Show fields as multiline text areas."""
     fields = st.session_state.get("job_fields", {})
-    st.markdown("### Alle Felder / All Fields")
+    lang = st.session_state.get("lang", "de")
+    st.markdown(tr("### Alle Felder / All Fields", lang))
     for key, value in fields.items():
         st.text_area(key.replace("_", " ").title(), value, key=f"multi_{key}")
