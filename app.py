@@ -1,32 +1,41 @@
 import streamlit as st
-from agents.file_agent import extract_text_from_pdf
-from functions.field_extraction import extract_job_fields
-from functions.boolean_search import generate_boolean_search
 
-st.set_page_config(page_title="Vacalyser FC2 Demo", layout="wide")
-st.title("📄 Vacalyser – Function Calling Demo (Option 1+2)")
-
-# Mode-Auswahl: Option 1 oder 2
-mode = st.radio(
-    "Extraction Mode",
-    options=["Function Calling (ChatCompletion)", "Responses API (Tool Loop)"],
-    index=0,
-    help="Option 1: Direktes Function Calling / Option 2: Responses API Tool Loop",
+from wizard_steps import (
+    wizard_step_1_basic,
+    wizard_step_2_company,
+    wizard_step_3_department,
+    wizard_step_4_role,
+    wizard_step_5_tasks,
+    wizard_step_6_skills,
+    wizard_step_7_compensation,
+    wizard_step_8_recruitment,
 )
 
-uploaded_file = st.file_uploader("Upload Job Ad (PDF)", type=["pdf"])
-language = st.selectbox("Sprache der Anzeige", ["de", "en"], index=0)
+st.set_page_config(page_title="Vacalyser Wizard", layout="wide")
 
-if uploaded_file:
-    st.subheader("📃 Extracted Text")
-    text = extract_text_from_pdf(uploaded_file)
-    st.text_area("Raw Text", text, height=300)
+if "current_step" not in st.session_state:
+    st.session_state.current_step = 0
+if "job_fields" not in st.session_state:
+    st.session_state.job_fields = {}
 
-    st.subheader("🧠 Structured Job Fields")
-    with st.spinner("Extrahiere strukturierte Daten ..."):
-        extracted = extract_job_fields(text, language, mode)
-    st.json(extracted)
+steps = [
+    wizard_step_1_basic,
+    wizard_step_2_company,
+    wizard_step_3_department,
+    wizard_step_4_role,
+    wizard_step_5_tasks,
+    wizard_step_6_skills,
+    wizard_step_7_compensation,
+    wizard_step_8_recruitment,
+]
 
-    st.subheader("🔍 Boolean Search String")
-    boolean_string = generate_boolean_search(extracted)
-    st.code(boolean_string, language="text")
+steps[st.session_state.current_step]()
+
+col_prev, col_next = st.columns(2)
+with col_prev:
+    if st.button("Zurück", disabled=st.session_state.current_step == 0):
+        st.session_state.current_step = max(0, st.session_state.current_step - 1)
+with col_next:
+    if st.button("Weiter", key="next_btn"):
+        if st.session_state.current_step < len(steps) - 1:
+            st.session_state.current_step += 1
