@@ -165,12 +165,20 @@ def display_fields_summary() -> None:
     st.markdown(tr("### Extrahierte Jobdaten / Extracted Job Info", lang))
     st.markdown("<style>.field-bullet{font-size:16px;}</style>", unsafe_allow_html=True)
     for key, value in fields.items():
-        if not value:
+        if not value or key == "parsed_data_raw":
             continue
         st.markdown(
             f"- **{key.replace('_', ' ').title()}**<br>{value}",
             unsafe_allow_html=True,
         )
+    if fields.get("parsed_data_raw"):
+        with st.expander(tr("Parsed Data Raw", lang), expanded=False):
+            st.text_area(
+                label=tr("Parsed Data Raw", lang),
+                value=fields["parsed_data_raw"],
+                key="parsed_data_raw_summary",
+                height=200,
+            )
 
 
 def display_fields_editable(prefix: str = "edit_") -> None:
@@ -188,7 +196,7 @@ def display_fields_editable(prefix: str = "edit_") -> None:
 
     st.markdown(tr("### Extrahierte Jobdaten / Extracted Job Info", lang))
     for key, value in fields.items():
-        if not value:
+        if not value or key == "parsed_data_raw":
             continue
         widget_key = f"{prefix}{key}"
         if widget_key in used_keys:
@@ -198,6 +206,14 @@ def display_fields_editable(prefix: str = "edit_") -> None:
             widget_key = f"{widget_key}_{suffix}"
         used_keys.add(widget_key)
         st.text_input(key.replace("_", " ").title(), value, key=widget_key)
+    if fields.get("parsed_data_raw"):
+        with st.expander(tr("Parsed Data Raw", lang), expanded=False):
+            st.text_area(
+                tr("Parsed Data Raw", lang),
+                fields["parsed_data_raw"],
+                key=f"{prefix}parsed_data_raw",
+                height=200,
+            )
 
 
 def export_fields_as_markdown() -> None:
