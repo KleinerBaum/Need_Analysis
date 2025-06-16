@@ -57,6 +57,7 @@ def wizard_step_1_basic() -> None:
         ):
             text = extract_text(uploaded_file)
             fields_update = basic_field_extraction(text)
+            fields_update["uploaded_file"] = uploaded_file.name
             save_fields_to_session(fields_update)
             st.session_state["last_uploaded"] = uploaded_file.name
 
@@ -66,6 +67,7 @@ def wizard_step_1_basic() -> None:
                 response.raise_for_status()
                 text = response.text
                 fields_update = basic_field_extraction(text)
+                fields_update["input_url"] = url_input
                 save_fields_to_session(fields_update)
                 st.session_state["last_url"] = url_input
             except Exception as exc:  # pragma: no cover - network

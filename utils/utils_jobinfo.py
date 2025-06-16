@@ -7,6 +7,8 @@ import base64
 import re
 from typing import Dict, Optional
 
+from keys import ALL_STEP_KEYS
+
 from utils.i18n import tr
 
 import docx
@@ -64,14 +66,15 @@ def extract_text(file) -> str:
 
 
 def basic_field_extraction(text: str) -> Dict[str, str]:
-    """Naive regex extraction of some fields from raw job text.
+    """Return a dictionary with extracted fields from ``text``.
 
-    Besides ``job_title`` and ``company_name`` this function tries to detect
-    simple skill statements like ``Proficiency in Python and ...``. Detected
-    skills are stored comma separated in ``must_have_skills``.
+    This naive regex approach detects ``job_title``, ``company_name`` and some
+    simple skill statements. The raw text is stored under ``parsed_data_raw``.
+    Any missing keys from :data:`keys.ALL_STEP_KEYS` are included with empty
+    strings so that Streamlit widgets can be pre-populated consistently.
     """
 
-    fields: Dict[str, str] = {}
+    fields: Dict[str, str] = {"parsed_data_raw": text}
 
     job_title = re.search(
         r"(?im)^\s*(Stellenbezeichnung|Jobtitel|Position)\s*[:\-]\s*(.+)$",
@@ -107,6 +110,9 @@ def basic_field_extraction(text: str) -> Dict[str, str]:
                 skills.append(part)
     if skills:
         fields["must_have_skills"] = ", ".join(skills)
+
+    for key in ALL_STEP_KEYS:
+        fields.setdefault(key, "")
 
     return fields
 

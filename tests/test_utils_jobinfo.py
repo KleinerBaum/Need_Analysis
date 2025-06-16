@@ -9,6 +9,7 @@ def test_basic_field_extraction_skills():
         result["must_have_skills"]
         == "Python, machine learning libraries, scikit-learn, TensorFlow"
     )
+    assert result["parsed_data_raw"] == text
 
 
 def test_extract_text_from_docx_with_table(tmp_path):
@@ -30,3 +31,4 @@ def test_extract_text_from_docx_with_table(tmp_path):
         fields["must_have_skills"]
         == "Python, machine learning libraries, scikit-learn, TensorFlow"
     )
+    assert fields["parsed_data_raw"] == text

@@ -118,3 +118,6 @@ GENERATED_KEYS: list[str] = [
     "target_group_analysis",
     "generated_boolean_query",
 ]
+
+# Flattened list of all user-facing field keys for convenience
+ALL_STEP_KEYS: list[str] = [key for step in STEP_KEYS.values() for key in step]
