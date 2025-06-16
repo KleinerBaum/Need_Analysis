@@ -1,16 +1,67 @@
 # Need_Analysis
 
-Simple Streamlit app to extract information from job related
-documents. Install dependencies from `requirements.txt` before running
-(includes `types-requests` for MyPy):
+AI-assisted job description extraction via Streamlit.
+
+## Requirements
+
+- Python 3.10+
+- Packages from `requirements.txt`
+
+## Installation
 
 ```bash
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Run the Streamlit app:
+## Running
 
 ```bash
 streamlit run app.py
 ```
+
+### Environment variables
+
+Optional settings used in `utils/openai_client.py`:
+
+- `OPENAI_API_KEY`
+- `OPENAI_ORG`
+
+Define them in your shell or inside `.streamlit/secrets.toml`.
+
+## Project structure
+
+```
+app.py          # entry point
+agents/         # OpenAI agent helpers
+functions/      # extraction and search logic
+utils/          # shared helpers
+```
+
+## Roadmap
+
+Functions from [06_05_25_gpt_slim](https://github.com/KleinerBaum/06_05_25_gpt_slim)
+will be integrated under `functions/` to extend job field extraction.
+
+## Development
+
+Run linting and typing checks:
+
+```bash
+ruff check .
+black .
+mypy .
+```
+
+Run tests (once they exist):
+
+```bash
+pytest
+```
+
+## Contributing
+
+- Use feature branches named `feat/<description>` and open PRs against `dev`.
+- Write Conventional Commit messages (`feat:`, `fix:`, etc.).
 
