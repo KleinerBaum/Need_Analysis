@@ -9,25 +9,27 @@ The two symbols used below:
 
 
 STEP_KEYS: dict[int, list[str]] = {
-    1: [  # Step 1: Discovery
+    1: [  # Step 1: Basic Data
         "job_title",  # ★
         "input_url",  # ⬚
         "uploaded_file",  # ⬚
         "parsed_data_raw",  # ⬚ (internal raw text storage)
     ],
-    2: [  # Step 2: Basic Job & Company Info
+    2: [  # Step 2: Company Info
         "company_name",  # ★
+        "city",  # ★
+        "headquarters_location",  # ◆
+        "company_website",  # ⬚
+    ],
+    3: [  # Step 3: Department and Team Info
+        "brand_name",  # ⬚
+        "team_structure",  # ⬚
+    ],
+    4: [  # Step 4: Role Definition
+        "date_of_employment_start",  # ⬚
         "job_type",  # ★
         "contract_type",  # ★
         "job_level",  # ★
-        "city",  # ★
-        "headquarters_location",  # ◆
-        "brand_name",  # ⬚
-        "company_website",  # ⬚
-        "date_of_employment_start",  # ⬚
-        "team_structure",  # ⬚
-    ],
-    3: [  # Step 3: Role Definition
         "role_description",  # ★
         "role_type",  # ★
         "reports_to",  # ◆
@@ -39,7 +41,7 @@ STEP_KEYS: dict[int, list[str]] = {
         "role_keywords",  # ⬚
         "decision_making_authority",  # ⬚
     ],
-    4: [  # Step 4: Tasks & Responsibilities
+    5: [  # Step 5: Tasks & Responsibilities
         "task_list",  # ★
         "key_responsibilities",  # ◆
         "technical_tasks",  # ⬚
@@ -51,7 +53,7 @@ STEP_KEYS: dict[int, list[str]] = {
         "innovation_tasks",  # ⬚
         "task_prioritization",  # ⬚
     ],
-    5: [  # Step 5: Skills & Competencies
+    6: [  # Step 6: Skills & Competencies
         "must_have_skills",  # ★
         "hard_skills",  # ◆
         "soft_skills",  # ◆
@@ -69,7 +71,7 @@ STEP_KEYS: dict[int, list[str]] = {
         "soft_requirement_details",  # ⬚
         "visa_sponsorship",  # ⬚
     ],
-    6: [  # Step 6: Compensation & Benefits
+    7: [  # Step 7: Compensation & Benefits
         "salary_range",  # ★
         "currency",  # ★
         "pay_frequency",  # ★
@@ -81,7 +83,7 @@ STEP_KEYS: dict[int, list[str]] = {
         "relocation_assistance",  # ⬚
         "childcare_support",  # ⬚
     ],
-    7: [  # Step 7: Recruitment Process
+    8: [  # Step 8: Recruitment Process
         "recruitment_contact_email",  # ★
         "recruitment_steps",  # ◆
         "recruitment_timeline",  # ⬚
@@ -91,22 +93,6 @@ STEP_KEYS: dict[int, list[str]] = {
         "onboarding_process_overview",  # ⬚
         "recruitment_contact_phone",  # ⬚
         "application_instructions",  # ⬚
-    ],
-    8: [  # Step 8: Additional Information & Summary
-        "language_of_ad",  # ★
-        "translation_required",  # ◆
-        "ad_seniority_tone",  # ⬚
-        "ad_length_preference",  # ⬚
-        "desired_publication_channels",  # ⬚
-        "employer_branding_elements",  # ⬚
-        "diversity_inclusion_statement",  # ⬚
-        "legal_disclaimers",  # ⬚
-        "company_awards",  # ⬚
-        "social_media_links",  # ⬚
-        "video_introduction_option",  # ⬚
-        "internal_job_id",  # ⬚
-        "deadline_urgency",  # ⬚
-        "comments_internal",  # ⬚
     ],
 }
 
