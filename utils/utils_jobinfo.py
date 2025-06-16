@@ -23,9 +23,20 @@ def extract_text_from_pdf(file) -> str:
 
 
 def extract_text_from_docx(file) -> str:
-    """Return text from a DOCX file."""
+    """Return text from a DOCX file including tables."""
+
     doc = docx.Document(file)
-    return "\n".join(para.text for para in doc.paragraphs)
+    lines = [para.text for para in doc.paragraphs]
+
+    # Include table cell text (if any). Some job ad templates store
+    # important fields like the job title in tables.
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                if cell.text:
+                    lines.append(cell.text)
+
+    return "\n".join(lines)
 
 
 def detect_file_type(file) -> Optional[str]:
