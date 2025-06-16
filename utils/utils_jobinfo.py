@@ -77,13 +77,18 @@ def save_fields_to_session(fields: Dict[str, str]) -> None:
     st.session_state.setdefault("job_fields", {}).update(fields)
 
 
-def display_fields_editable() -> None:
-    """Show all stored fields as editable inputs."""
+def display_fields_editable(prefix: str = "edit_") -> None:
+    """Show all stored fields as editable inputs.
+
+    Args:
+        prefix: Key prefix to differentiate multiple widget groups.
+    """
+
     fields = st.session_state.get("job_fields", {})
     lang = st.session_state.get("lang", "de")
     st.markdown(tr("### Extrahierte Jobdaten / Extracted Job Info", lang))
     for key, value in fields.items():
-        st.text_input(key.replace("_", " ").title(), value, key=f"edit_{key}")
+        st.text_input(key.replace("_", " ").title(), value, key=f"{prefix}{key}")
 
 
 def export_fields_as_markdown() -> None:
