@@ -1,7 +1,8 @@
 # Need_Analysis
 
 Simple Streamlit app to extract information from job related
-documents. Install dependencies from `requirements.txt` before running:
+documents. Install dependencies from `requirements.txt` before running
+(includes `types-requests` for MyPy):
 
 ```bash
 pip install -r requirements.txt

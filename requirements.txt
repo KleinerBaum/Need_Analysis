@@ -3,3 +3,4 @@ PyMuPDF
 openai
 requests
 python-docx
+types-requests
