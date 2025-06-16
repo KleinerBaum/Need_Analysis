@@ -86,9 +86,20 @@ def display_fields_editable(prefix: str = "edit_") -> None:
 
     fields = st.session_state.get("job_fields", {})
     lang = st.session_state.get("lang", "de")
+
+    # Track used widget keys to avoid StreamlitDuplicateElementKey errors.
+    used_keys = st.session_state.setdefault("_used_widget_keys", set())
+
     st.markdown(tr("### Extrahierte Jobdaten / Extracted Job Info", lang))
     for key, value in fields.items():
-        st.text_input(key.replace("_", " ").title(), value, key=f"{prefix}{key}")
+        widget_key = f"{prefix}{key}"
+        if widget_key in used_keys:
+            suffix = 1
+            while f"{widget_key}_{suffix}" in used_keys:
+                suffix += 1
+            widget_key = f"{widget_key}_{suffix}"
+        used_keys.add(widget_key)
+        st.text_input(key.replace("_", " ").title(), value, key=widget_key)
 
 
 def export_fields_as_markdown() -> None:
