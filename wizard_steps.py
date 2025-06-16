@@ -116,10 +116,12 @@ def wizard_step_3_department() -> None:
     fields = st.session_state.get("job_fields", {})
     st.header(tr("3. Abteilung & Team / Department and Team Info", lang))
     display_fields_summary()
-    with st.expander(tr("Team/Abteilung (optional)", lang)):
+    col1, col2 = st.columns(2)
+    with col1:
         fields["brand_name"] = st.text_input(
             tr("Markenname / Brand Name", lang), fields.get("brand_name", "")
         )
+    with col2:
         fields["team_structure"] = st.text_area(
             tr("Teamstruktur / Team Structure", lang), fields.get("team_structure", "")
         )
@@ -163,38 +165,37 @@ def wizard_step_4_role() -> None:
     fields["role_type"] = st.text_input(
         tr("Rollentyp / Role Type *", lang), fields.get("role_type", "")
     )
-    with st.expander(tr("Weitere Optionen / More Options", lang)):
-        col1, col2 = st.columns(2)
-        with col1:
-            fields["date_of_employment_start"] = st.date_input(
-                tr("Startdatum / Start Date", lang),
-                fields.get("date_of_employment_start", None),
-            )
-            fields["role_performance_metrics"] = st.text_area(
-                tr("Leistungskennzahlen / Performance Metrics", lang),
-                fields.get("role_performance_metrics", ""),
-            )
-            fields["role_priority_projects"] = st.text_area(
-                tr("Prioritätsprojekte / Priority Projects", lang),
-                fields.get("role_priority_projects", ""),
-            )
-            fields["travel_requirements"] = st.text_input(
-                tr("Reisebereitschaft / Travel Requirements", lang),
-                fields.get("travel_requirements", ""),
-            )
-        with col2:
-            fields["work_schedule"] = st.text_input(
-                tr("Arbeitszeiten / Work Schedule", lang),
-                fields.get("work_schedule", ""),
-            )
-            fields["role_keywords"] = st.text_input(
-                tr("Schlüsselwörter / Role Keywords", lang),
-                fields.get("role_keywords", ""),
-            )
-            fields["decision_making_authority"] = st.text_input(
-                tr("Entscheidungskompetenz / Decision Making Authority", lang),
-                fields.get("decision_making_authority", ""),
-            )
+    col1, col2 = st.columns(2)
+    with col1:
+        fields["date_of_employment_start"] = st.date_input(
+            tr("Startdatum / Start Date", lang),
+            fields.get("date_of_employment_start", None),
+        )
+        fields["role_performance_metrics"] = st.text_area(
+            tr("Leistungskennzahlen / Performance Metrics", lang),
+            fields.get("role_performance_metrics", ""),
+        )
+        fields["role_priority_projects"] = st.text_area(
+            tr("Prioritätsprojekte / Priority Projects", lang),
+            fields.get("role_priority_projects", ""),
+        )
+        fields["travel_requirements"] = st.text_input(
+            tr("Reisebereitschaft / Travel Requirements", lang),
+            fields.get("travel_requirements", ""),
+        )
+    with col2:
+        fields["work_schedule"] = st.text_input(
+            tr("Arbeitszeiten / Work Schedule", lang),
+            fields.get("work_schedule", ""),
+        )
+        fields["role_keywords"] = st.text_input(
+            tr("Schlüsselwörter / Role Keywords", lang),
+            fields.get("role_keywords", ""),
+        )
+        fields["decision_making_authority"] = st.text_input(
+            tr("Entscheidungskompetenz / Decision Making Authority", lang),
+            fields.get("decision_making_authority", ""),
+        )
     with st.expander(tr("Fortgeschritten / Advanced", lang), expanded=False):
         fields["reports_to"] = st.text_input(
             tr("Berichtet an / Reports To", lang), fields.get("reports_to", "")
@@ -214,46 +215,45 @@ def wizard_step_5_tasks() -> None:
     fields["task_list"] = st.text_area(
         tr("Aufgabenliste / Task List *", lang), fields.get("task_list", "")
     )
-    with st.expander(tr("Weitere Aufgaben / More Tasks", lang)):
-        col1, col2 = st.columns(2)
-        with col1:
-            fields["key_responsibilities"] = st.text_area(
-                tr("Hauptverantwortlichkeiten / Key Responsibilities", lang),
-                fields.get("key_responsibilities", ""),
-            )
-            fields["technical_tasks"] = st.text_area(
-                tr("Technische Aufgaben / Technical Tasks", lang),
-                fields.get("technical_tasks", ""),
-            )
-            fields["managerial_tasks"] = st.text_area(
-                tr("Managementaufgaben / Managerial Tasks", lang),
-                fields.get("managerial_tasks", ""),
-            )
-            fields["administrative_tasks"] = st.text_area(
-                tr("Administrative Aufgaben / Administrative Tasks", lang),
-                fields.get("administrative_tasks", ""),
-            )
-        with col2:
-            fields["customer_facing_tasks"] = st.text_area(
-                tr("Kundenkontakt / Customer Facing Tasks", lang),
-                fields.get("customer_facing_tasks", ""),
-            )
-            fields["internal_reporting_tasks"] = st.text_area(
-                tr("Reporting intern / Internal Reporting Tasks", lang),
-                fields.get("internal_reporting_tasks", ""),
-            )
-            fields["performance_tasks"] = st.text_area(
-                tr("Performance-Aufgaben / Performance Tasks", lang),
-                fields.get("performance_tasks", ""),
-            )
-            fields["innovation_tasks"] = st.text_area(
-                tr("Innovationsaufgaben / Innovation Tasks", lang),
-                fields.get("innovation_tasks", ""),
-            )
-            fields["task_prioritization"] = st.text_area(
-                tr("Aufgabenpriorisierung / Task Prioritization", lang),
-                fields.get("task_prioritization", ""),
-            )
+    with st.expander(tr("Hauptverantwortlichkeiten / Key Responsibilities", lang)):
+        fields["key_responsibilities"] = st.text_area(
+            tr("Key Responsibilities", lang), fields.get("key_responsibilities", "")
+        )
+    col1, col2 = st.columns(2)
+    with col1:
+        fields["technical_tasks"] = st.text_area(
+            tr("Technische Aufgaben / Technical Tasks", lang),
+            fields.get("technical_tasks", ""),
+        )
+        fields["managerial_tasks"] = st.text_area(
+            tr("Managementaufgaben / Managerial Tasks", lang),
+            fields.get("managerial_tasks", ""),
+        )
+        fields["administrative_tasks"] = st.text_area(
+            tr("Administrative Aufgaben / Administrative Tasks", lang),
+            fields.get("administrative_tasks", ""),
+        )
+        fields["customer_facing_tasks"] = st.text_area(
+            tr("Kundenkontakt / Customer Facing Tasks", lang),
+            fields.get("customer_facing_tasks", ""),
+        )
+    with col2:
+        fields["internal_reporting_tasks"] = st.text_area(
+            tr("Reporting intern / Internal Reporting Tasks", lang),
+            fields.get("internal_reporting_tasks", ""),
+        )
+        fields["performance_tasks"] = st.text_area(
+            tr("Performance-Aufgaben / Performance Tasks", lang),
+            fields.get("performance_tasks", ""),
+        )
+        fields["innovation_tasks"] = st.text_area(
+            tr("Innovationsaufgaben / Innovation Tasks", lang),
+            fields.get("innovation_tasks", ""),
+        )
+        fields["task_prioritization"] = st.text_area(
+            tr("Aufgabenpriorisierung / Task Prioritization", lang),
+            fields.get("task_prioritization", ""),
+        )
     st.session_state["job_fields"] = fields
 
 
@@ -275,66 +275,66 @@ def wizard_step_6_skills() -> None:
     fields["must_have_skills"] = st.text_area(
         tr("Must-have Skills *", lang), fields.get("must_have_skills", "")
     )
-    with st.expander(tr("Weitere Skills / More Skills", lang)):
-        col1, col2 = st.columns(2)
-        with col1:
-            fields["hard_skills"] = st.text_area(
-                tr("Hard Skills", lang), fields.get("hard_skills", "")
-            )
-            fields["soft_skills"] = st.text_area(
-                tr("Soft Skills", lang), fields.get("soft_skills", "")
-            )
-            fields["nice_to_have_skills"] = st.text_area(
-                tr("Nice-to-have Skills", lang), fields.get("nice_to_have_skills", "")
-            )
-            fields["certifications_required"] = st.text_area(
-                tr("Zertifikate / Certifications Required", lang),
-                fields.get("certifications_required", ""),
-            )
-            fields["language_requirements"] = st.text_area(
-                tr("Sprachkenntnisse / Language Requirements", lang),
-                fields.get("language_requirements", ""),
-            )
-            fields["tool_proficiency"] = st.text_area(
-                tr("Toolkenntnisse / Tool Proficiency", lang),
-                fields.get("tool_proficiency", ""),
-            )
-            fields["technical_stack"] = st.text_area(
-                tr("Technischer Stack / Technical Stack", lang),
-                fields.get("technical_stack", ""),
-            )
-        with col2:
-            fields["domain_expertise"] = st.text_area(
-                tr("Fachexpertise / Domain Expertise", lang),
-                fields.get("domain_expertise", ""),
-            )
-            fields["leadership_competencies"] = st.text_area(
-                tr("Leadership-Kompetenzen / Leadership Competencies", lang),
-                fields.get("leadership_competencies", ""),
-            )
-            fields["industry_experience"] = st.text_area(
-                tr("Branchenerfahrung / Industry Experience", lang),
-                fields.get("industry_experience", ""),
-            )
-            fields["analytical_skills"] = st.text_area(
-                tr("Analytische Fähigkeiten / Analytical Skills", lang),
-                fields.get("analytical_skills", ""),
-            )
-            fields["communication_skills"] = st.text_area(
-                tr("Kommunikationsfähigkeiten / Communication Skills", lang),
-                fields.get("communication_skills", ""),
-            )
-            fields["project_management_skills"] = st.text_area(
-                tr("Projektmanagement / Project Management Skills", lang),
-                fields.get("project_management_skills", ""),
-            )
-            fields["soft_requirement_details"] = st.text_area(
-                tr("Details zu Soft Requirements", lang),
-                fields.get("soft_requirement_details", ""),
-            )
-            fields["visa_sponsorship"] = st.text_input(
-                tr("Visa Sponsorship", lang), fields.get("visa_sponsorship", "")
-            )
+    with st.expander(tr("Empfohlene Skills", lang)):
+        fields["hard_skills"] = st.text_area(
+            tr("Hard Skills", lang), fields.get("hard_skills", "")
+        )
+        fields["soft_skills"] = st.text_area(
+            tr("Soft Skills", lang), fields.get("soft_skills", "")
+        )
+    col1, col2 = st.columns(2)
+    with col1:
+        fields["nice_to_have_skills"] = st.text_area(
+            tr("Nice-to-have Skills", lang), fields.get("nice_to_have_skills", "")
+        )
+        fields["certifications_required"] = st.text_area(
+            tr("Zertifikate / Certifications Required", lang),
+            fields.get("certifications_required", ""),
+        )
+        fields["language_requirements"] = st.text_area(
+            tr("Sprachkenntnisse / Language Requirements", lang),
+            fields.get("language_requirements", ""),
+        )
+        fields["tool_proficiency"] = st.text_area(
+            tr("Toolkenntnisse / Tool Proficiency", lang),
+            fields.get("tool_proficiency", ""),
+        )
+        fields["technical_stack"] = st.text_area(
+            tr("Technischer Stack / Technical Stack", lang),
+            fields.get("technical_stack", ""),
+        )
+    with col2:
+        fields["domain_expertise"] = st.text_area(
+            tr("Fachexpertise / Domain Expertise", lang),
+            fields.get("domain_expertise", ""),
+        )
+        fields["leadership_competencies"] = st.text_area(
+            tr("Leadership-Kompetenzen / Leadership Competencies", lang),
+            fields.get("leadership_competencies", ""),
+        )
+        fields["industry_experience"] = st.text_area(
+            tr("Branchenerfahrung / Industry Experience", lang),
+            fields.get("industry_experience", ""),
+        )
+        fields["analytical_skills"] = st.text_area(
+            tr("Analytische Fähigkeiten / Analytical Skills", lang),
+            fields.get("analytical_skills", ""),
+        )
+        fields["communication_skills"] = st.text_area(
+            tr("Kommunikationsfähigkeiten / Communication Skills", lang),
+            fields.get("communication_skills", ""),
+        )
+        fields["project_management_skills"] = st.text_area(
+            tr("Projektmanagement / Project Management Skills", lang),
+            fields.get("project_management_skills", ""),
+        )
+        fields["soft_requirement_details"] = st.text_area(
+            tr("Details zu Soft Requirements", lang),
+            fields.get("soft_requirement_details", ""),
+        )
+        fields["visa_sponsorship"] = st.text_input(
+            tr("Visa Sponsorship", lang), fields.get("visa_sponsorship", "")
+        )
     st.session_state["job_fields"] = fields
 
 
@@ -359,7 +359,7 @@ def wizard_step_7_compensation() -> None:
         ],
         index=0,
     )
-    with st.expander(tr("Weitere Benefits / More Benefits", lang)):
+    with st.expander(tr("Optionale Benefits", lang)):
         col1, col2 = st.columns(2)
         with col1:
             fields["bonus_scheme"] = st.text_area(
@@ -376,19 +376,21 @@ def wizard_step_7_compensation() -> None:
                 tr("Remote-Regelung / Remote Work Policy", lang),
                 fields.get("remote_work_policy", ""),
             )
-        with col2:
             fields["flexible_hours"] = st.text_input(
                 tr("Flexible Arbeitszeiten / Flexible Hours", lang),
                 fields.get("flexible_hours", ""),
             )
-            fields["relocation_assistance"] = st.text_area(
-                tr("Umzugshilfe / Relocation Assistance", lang),
-                fields.get("relocation_assistance", ""),
-            )
-            fields["childcare_support"] = st.text_area(
-                tr("Kinderbetreuung / Childcare Support", lang),
-                fields.get("childcare_support", ""),
-            )
+    col1, col2 = st.columns(2)
+    with col1:
+        fields["relocation_assistance"] = st.text_area(
+            tr("Umzugshilfe / Relocation Assistance", lang),
+            fields.get("relocation_assistance", ""),
+        )
+    with col2:
+        fields["childcare_support"] = st.text_area(
+            tr("Kinderbetreuung / Childcare Support", lang),
+            fields.get("childcare_support", ""),
+        )
     st.session_state["job_fields"] = fields
 
 
@@ -402,39 +404,39 @@ def wizard_step_8_recruitment() -> None:
         tr("Recruiting-Kontakt E-Mail * / Contact Email *", lang),
         fields.get("recruitment_contact_email", ""),
     )
-    with st.expander(tr("Weitere Angaben / More Options", lang)):
-        col1, col2 = st.columns(2)
-        with col1:
-            fields["recruitment_steps"] = st.text_area(
-                tr("Prozessschritte / Recruitment Steps", lang),
-                fields.get("recruitment_steps", ""),
-            )
-            fields["recruitment_timeline"] = st.text_input(
-                tr("Zeitleiste / Recruitment Timeline", lang),
-                fields.get("recruitment_timeline", ""),
-            )
-            fields["number_of_interviews"] = st.text_input(
-                tr("Anzahl Interviews / Number of Interviews", lang),
-                fields.get("number_of_interviews", ""),
-            )
-            fields["interview_format"] = st.text_input(
-                tr("Interviewformat / Interview Format", lang),
-                fields.get("interview_format", ""),
-            )
-        with col2:
-            fields["assessment_tests"] = st.text_area(
-                tr("Assessment-Tests", lang), fields.get("assessment_tests", "")
-            )
-            fields["onboarding_process_overview"] = st.text_area(
-                tr("Onboarding-Prozess / Onboarding Process", lang),
-                fields.get("onboarding_process_overview", ""),
-            )
-            fields["recruitment_contact_phone"] = st.text_input(
-                tr("Telefon Recruiting-Kontakt / Contact Phone", lang),
-                fields.get("recruitment_contact_phone", ""),
-            )
-            fields["application_instructions"] = st.text_area(
-                tr("Bewerbungsanweisungen / Application Instructions", lang),
-                fields.get("application_instructions", ""),
-            )
+    with st.expander(tr("Recruitment Steps", lang)):
+        fields["recruitment_steps"] = st.text_area(
+            tr("Prozessschritte / Recruitment Steps", lang),
+            fields.get("recruitment_steps", ""),
+        )
+    col1, col2 = st.columns(2)
+    with col1:
+        fields["recruitment_timeline"] = st.text_input(
+            tr("Zeitleiste / Recruitment Timeline", lang),
+            fields.get("recruitment_timeline", ""),
+        )
+        fields["number_of_interviews"] = st.text_input(
+            tr("Anzahl Interviews / Number of Interviews", lang),
+            fields.get("number_of_interviews", ""),
+        )
+        fields["interview_format"] = st.text_input(
+            tr("Interviewformat / Interview Format", lang),
+            fields.get("interview_format", ""),
+        )
+        fields["assessment_tests"] = st.text_area(
+            tr("Assessment-Tests", lang), fields.get("assessment_tests", "")
+        )
+    with col2:
+        fields["onboarding_process_overview"] = st.text_area(
+            tr("Onboarding-Prozess / Onboarding Process", lang),
+            fields.get("onboarding_process_overview", ""),
+        )
+        fields["recruitment_contact_phone"] = st.text_input(
+            tr("Telefon Recruiting-Kontakt / Contact Phone", lang),
+            fields.get("recruitment_contact_phone", ""),
+        )
+        fields["application_instructions"] = st.text_area(
+            tr("Bewerbungsanweisungen / Application Instructions", lang),
+            fields.get("application_instructions", ""),
+        )
     st.session_state["job_fields"] = fields

@@ -92,6 +92,38 @@ def basic_field_extraction(text: str) -> Dict[str, str]:
     if company_name:
         fields["company_name"] = company_name.group(2).strip()
 
+    city = re.search(
+        r"(?im)^\s*(Stadt|Ort|City)\s*[:\-]\s*(.+)$",
+        text,
+    )
+    if city:
+        fields["city"] = city.group(2).strip()
+
+    website = re.search(
+        r"(?im)^\s*(Unternehmenswebsite|Website|Webseite|Company Website)\s*[:\-]\s*(\S+)",
+        text,
+    )
+    if website:
+        fields["company_website"] = website.group(2).strip()
+
+    job_type_match = re.search(
+        r"(?i)\b(full[-\s]?time|teilzeit|part[-\s]?time|praktikum|internship|freelance)\b",
+        text,
+    )
+    if job_type_match:
+        fields["job_type"] = job_type_match.group(1).replace("-", " ").title()
+
+    contract_type_match = re.search(
+        r"(?i)\b(unbefristet|permanent|befristet|fixed[-\s]?term|werkvertrag|contract for work)\b",
+        text,
+    )
+    if contract_type_match:
+        fields["contract_type"] = contract_type_match.group(1).replace("-", " ").title()
+
+    job_level_match = re.search(r"(?i)\b(junior|mid|senior|lead|management)\b", text)
+    if job_level_match:
+        fields["job_level"] = job_level_match.group(1).title()
+
     # --- very small skill extraction -------------------------------------
     cleaned_text = re.sub(r"e\.g\.,?", "", text, flags=re.IGNORECASE)
     cleaned_text = re.sub(r"i\.e\.,?", "", cleaned_text, flags=re.IGNORECASE)
