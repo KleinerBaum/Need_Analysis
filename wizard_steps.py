@@ -31,7 +31,7 @@ def wizard_step_1_basic() -> None:
         fields.get("job_title", ""),
     )
     if fields:
-        display_fields_editable()
+        display_fields_editable(prefix="step1_")
 
     if not job_title:
         st.warning(tr("Bitte Jobtitel eingeben. / Please enter job title.", lang))
@@ -90,7 +90,7 @@ def wizard_step_2_company() -> None:
             lang,
         )
     )
-    display_fields_editable()
+    display_fields_editable(prefix="step2_")
     fields["company_name"] = st.text_input(
         tr("Unternehmen / Company Name *", lang), fields.get("company_name", "")
     )
@@ -112,7 +112,7 @@ def wizard_step_3_department() -> None:
     lang = st.session_state.get("lang", "de")
     fields = st.session_state.get("job_fields", {})
     st.header(tr("3. Abteilung & Team / Department and Team Info", lang))
-    display_fields_editable()
+    display_fields_editable(prefix="step3_")
     with st.expander(tr("Team/Abteilung (optional)", lang)):
         fields["brand_name"] = st.text_input(
             tr("Markenname / Brand Name", lang), fields.get("brand_name", "")
@@ -128,7 +128,7 @@ def wizard_step_4_role() -> None:
     lang = st.session_state.get("lang", "de")
     fields = st.session_state.get("job_fields", {})
     st.header(tr("4. Rollen-Definition / Role Definition", lang))
-    display_fields_editable()
+    display_fields_editable(prefix="step4_")
     fields["job_type"] = st.selectbox(
         tr("Jobart / Job Type *", lang),
         [
@@ -202,7 +202,7 @@ def wizard_step_5_tasks() -> None:
     lang = st.session_state.get("lang", "de")
     fields = st.session_state.get("job_fields", {})
     st.header(tr("5. Aufgaben & Verantwortlichkeiten / Tasks & Responsibilities", lang))
-    display_fields_editable()
+    display_fields_editable(prefix="step5_")
     fields["task_list"] = st.text_area(
         tr("Aufgabenliste / Task List *", lang), fields.get("task_list", "")
     )
@@ -251,7 +251,7 @@ def wizard_step_6_skills() -> None:
     lang = st.session_state.get("lang", "de")
     fields = st.session_state.get("job_fields", {})
     st.header(tr("6. Skills & Kompetenzen / Skills & Competencies", lang))
-    display_fields_editable()
+    display_fields_editable(prefix="step6_")
     fields["must_have_skills"] = st.text_area(
         tr("Must-have Skills *", lang), fields.get("must_have_skills", "")
     )
@@ -320,7 +320,7 @@ def wizard_step_7_compensation() -> None:
     lang = st.session_state.get("lang", "de")
     fields = st.session_state.get("job_fields", {})
     st.header(tr("7. Vergütung & Benefits / Compensation & Benefits", lang))
-    display_fields_editable()
+    display_fields_editable(prefix="step7_")
     fields["salary_range"] = st.text_input(
         tr("Gehaltsrange / Salary Range *", lang), fields.get("salary_range", "")
     )
@@ -371,7 +371,7 @@ def wizard_step_8_recruitment() -> None:
     lang = st.session_state.get("lang", "de")
     fields = st.session_state.get("job_fields", {})
     st.header(tr("8. Bewerbungsprozess / Recruitment Process", lang))
-    display_fields_editable()
+    display_fields_editable(prefix="step8_")
     fields["recruitment_contact_email"] = st.text_input(
         tr("Recruiting-Kontakt E-Mail * / Contact Email *", lang),
         fields.get("recruitment_contact_email", ""),
