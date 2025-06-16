@@ -94,6 +94,11 @@ STEP_KEYS: dict[int, list[str]] = {
         "recruitment_contact_phone",  # ⬚
         "application_instructions",  # ⬚
     ],
+    9: [  # Step 9: Language & Publication
+        "language_of_ad",  # ★
+        "translation_required",  # ◆
+        "desired_publication_channels",  # ⬚
+    ],
 }
 
 # Fields generated or used internally (not shown in UI steps)
