@@ -15,6 +15,8 @@ from functions.processors import (
     update_translation_required,
 )
 
+import datetime
+
 from utils.utils_jobinfo import (
     display_fields_summary,
     basic_field_extraction,
@@ -182,9 +184,15 @@ def wizard_step_4_role() -> None:
     )
     col1, col2 = st.columns(2)
     with col1:
+        start_value = fields.get("date_of_employment_start")
+        if isinstance(start_value, str):
+            try:
+                start_value = datetime.datetime.fromisoformat(start_value).date()
+            except ValueError:
+                start_value = None
         fields["date_of_employment_start"] = st.date_input(
             tr("Startdatum / Start Date", lang),
-            fields.get("date_of_employment_start", None),
+            start_value,
         )
         fields["role_performance_metrics"] = st.text_area(
             tr("Leistungskennzahlen / Performance Metrics", lang),
