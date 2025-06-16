@@ -50,13 +50,23 @@ def extract_text(file) -> str:
 
 def basic_field_extraction(text: str) -> Dict[str, str]:
     """Naive regex extraction of some fields from text."""
+
     fields: Dict[str, str] = {}
-    job_title = re.search(r"(?i)(Stellenbezeichnung|Jobtitel|Position):?\s*(.+)", text)
+
+    job_title = re.search(
+        r"(?im)^\s*(Stellenbezeichnung|Jobtitel|Position)\s*[:\-]\s*(.+)$",
+        text,
+    )
     if job_title:
         fields["job_title"] = job_title.group(2).strip()
-    company_name = re.search(r"(?i)(Unternehmen|Company|Firma):?\s*(.+)", text)
+
+    company_name = re.search(
+        r"(?im)^\s*(Unternehmen|Company|Firma)\s*[:\-]\s*(.+)$",
+        text,
+    )
     if company_name:
         fields["company_name"] = company_name.group(2).strip()
+
     return fields
 
 
