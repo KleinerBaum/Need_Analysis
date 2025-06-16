@@ -60,6 +60,11 @@ Run tests (once they exist):
 pytest
 ```
 
+## Changelog
+
+- Enhanced file extraction to reset pointers for DOCX and TXT files
+- Improved Boolean search generation without city input
+
 ## Contributing
 
 - Use feature branches named `feat/<description>` and open PRs against `dev`.
