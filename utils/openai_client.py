@@ -10,12 +10,24 @@ from openai import OpenAI
 # Load secrets from environment or .streamlit/secrets.toml (Streamlit macht das automatisch)
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
-    organization=os.getenv("OPENAI_ORG"),
+    organization=os.getenv("OPENAI_ORG_ID"),
 )
 
 
 # Funktion für Option 1: Klassisches Function Calling
-def call_extract_fields_function_calling(text, language="de"):
+def call_extract_fields_function_calling(
+    text: str, language: str = "de"
+) -> dict[str, str]:
+    """Extract job fields via OpenAI function calling.
+
+    Args:
+        text: Raw job advertisement text.
+        language: Target language for the response, ``"de"`` or ``"en"``.
+
+    Returns:
+        Parsed job fields as a dictionary or an error message.
+    """
+
     function_def = {
         "name": "extract_job_fields",
         "description": "Extract structured job ad fields like title, skills, benefits, location.",
@@ -29,7 +41,7 @@ def call_extract_fields_function_calling(text, language="de"):
         },
     }
     try:
-        response = client.chat.completions.create(
+        response = client.chat.completions.create(  # type: ignore[arg-type,call-overload]
             model="gpt-4o",  # Alternativ: "gpt-4" oder "gpt-3.5-turbo"
             messages=[
                 {
@@ -57,7 +69,21 @@ def call_extract_fields_function_calling(text, language="de"):
 
 
 # Funktion für Option 2: Responses API (Tool Loop)
-def call_extract_fields_responses_api(text, language="de"):
+def call_extract_fields_responses_api(
+    text: str, language: str = "de"
+) -> dict[str, str]:
+    """Fallback extraction using the OpenAI Responses API mock.
+
+    This implementation currently mirrors :func:`call_extract_fields_function_calling` and
+    exists as a placeholder for future integration with the Assistants API.
+
+    Args:
+        text: Raw job advertisement text.
+        language: Target language for the response, ``"de"`` or ``"en"``.
+
+    Returns:
+        Parsed job fields as a dictionary or an error message.
+    """
     # Beispielhaftes Mockup – für echten Einsatz OpenAI Assistants API verwenden
     # Responses API ist (noch) nur mit HTTP-Requests oder openai.beta nutzbar (bald nativ in openai)
     # Hier ein Platzhalter-Call:
