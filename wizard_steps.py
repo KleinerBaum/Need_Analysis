@@ -4,6 +4,17 @@ from __future__ import annotations
 
 import streamlit as st
 
+from functions.processors import (
+    update_bonus_scheme,
+    update_commission_structure,
+    update_must_have_skills,
+    update_nice_to_have_skills,
+    update_publication_channels,
+    update_salary_range,
+    update_task_list,
+    update_translation_required,
+)
+
 from utils.utils_jobinfo import (
     display_fields_summary,
     basic_field_extraction,
@@ -219,6 +230,7 @@ def wizard_step_5_tasks() -> None:
         if tasks:
             fields["task_list"] = "\n".join(tasks)
             st.info(tr("Aufgaben von ESCO importiert", lang))
+        update_task_list(fields)
     st.header(tr("5. Aufgaben & Verantwortlichkeiten / Tasks & Responsibilities", lang))
     display_fields_summary()
     fields["task_list"] = st.text_area(
@@ -275,6 +287,8 @@ def wizard_step_6_skills() -> None:
         if skills:
             fields["must_have_skills"] = ", ".join(skills)
             st.info(tr("Skills von ESCO importiert", lang))
+        update_must_have_skills(fields)
+    update_nice_to_have_skills(fields)
     st.header(tr("6. Skills & Kompetenzen / Skills & Competencies", lang))
     skill_query = st.text_input(
         tr("Skill bei ESCO suchen / Search skill in ESCO", lang)
@@ -358,6 +372,10 @@ def wizard_step_7_compensation() -> None:
     fields = st.session_state.get("job_fields", {})
     st.header(tr("7. Vergütung & Benefits / Compensation & Benefits", lang))
     display_fields_summary()
+    update_salary_range(fields)
+    update_bonus_scheme(fields)
+    update_commission_structure(fields)
+    update_publication_channels(fields)
     fields["salary_range"] = st.text_input(
         tr("Gehaltsrange / Salary Range *", lang), fields.get("salary_range", "")
     )
@@ -453,4 +471,28 @@ def wizard_step_8_recruitment() -> None:
             tr("Bewerbungsanweisungen / Application Instructions", lang),
             fields.get("application_instructions", ""),
         )
+    st.session_state["job_fields"] = fields
+
+
+def wizard_step_9_publication() -> None:
+    """Step 9: language and publication settings."""
+    lang = st.session_state.get("lang", "de")
+    fields = st.session_state.get("job_fields", {})
+    update_publication_channels(fields)
+    update_translation_required(fields)
+    st.header(tr("9. Sprache & Veröffentlichung / Language & Publication", lang))
+    display_fields_summary()
+    fields["language_of_ad"] = st.selectbox(
+        tr("Anzeigensprache / Ad Language", lang),
+        ["Deutsch", "English"],
+        index=0 if fields.get("language_of_ad", "Deutsch") == "Deutsch" else 1,
+    )
+    fields["desired_publication_channels"] = st.text_input(
+        tr("Publikationskanäle / Publication Channels", lang),
+        fields.get("desired_publication_channels", ""),
+    )
+    fields["translation_required"] = st.text_input(
+        tr("Übersetzung nötig? / Translation Required?", lang),
+        fields.get("translation_required", ""),
+    )
     st.session_state["job_fields"] = fields

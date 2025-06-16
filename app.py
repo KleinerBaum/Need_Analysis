@@ -18,6 +18,7 @@ from wizard_steps import (
     wizard_step_6_skills,
     wizard_step_7_compensation,
     wizard_step_8_recruitment,
+    wizard_step_9_publication,
 )
 
 st.set_page_config(page_title="Vacalyser Wizard", layout="wide")
@@ -60,6 +61,7 @@ wizard_steps = [
     ("Skills / Kompetenzen", wizard_step_6_skills),
     ("Verg\u00fctung / Compensation", wizard_step_7_compensation),
     ("Recruiting-Prozess / Recruitment", wizard_step_8_recruitment),
+    ("Sprache & Veröffentlichung", wizard_step_9_publication),
 ]
 
 if "step_idx" not in st.session_state:
