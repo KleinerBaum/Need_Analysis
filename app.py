@@ -21,7 +21,12 @@ from wizard_steps import (
     wizard_step_9_publication,
 )
 
+LOGO_PATH = "images/sthree.png"
+BACKGROUND_PATH = "images/AdobeStock_506577005.jpeg"
+
 st.set_page_config(page_title="Vacalyser Wizard", layout="wide")
+
+st.image(LOGO_PATH, width=200)
 
 # Reset widget key tracking each run to avoid stale keys
 st.session_state["_used_widget_keys"] = set()
@@ -37,10 +42,16 @@ st.session_state["lang"] = "en" if toggle else "de"
 lang = st.session_state["lang"]
 
 st.markdown(
-    """
+    f"""
     <style>
-        .main {background-color: #f0f4f8;}
-        input, textarea {border: 2px solid #4a90e2 !important;}
+        .main {{
+            background: linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url('{BACKGROUND_PATH}');
+            background-size: cover;
+            background-attachment: fixed;
+        }}
+        input, textarea {{border: 2px solid #5b031c !important;}}
+        .stProgress > div > div > div > div {{background-color: #5b031c;}}
+        h1, h2, h3 {{color: #5b031c;}}
     </style>
     """,
     unsafe_allow_html=True,

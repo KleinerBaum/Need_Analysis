@@ -21,6 +21,9 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
+The UI now features `images/sthree.png` as the logo and a 50% transparent
+background from `images/AdobeStock_506577005.jpeg` with matching accent colours.
+
 ### Environment variables
 
 Optional settings used in `utils/openai_client.py`:
