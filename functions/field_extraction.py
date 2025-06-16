@@ -1,8 +1,8 @@
-import os
 from utils.openai_client import (
     call_extract_fields_function_calling,
-    call_extract_fields_responses_api
+    call_extract_fields_responses_api,
 )
+
 
 def extract_job_fields(text, language="de", mode="Function Calling (ChatCompletion)"):
     """

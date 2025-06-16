@@ -1,5 +1,6 @@
 import fitz  # PyMuPDF
 
+
 def extract_text_from_pdf(uploaded_file):
     # Reset file pointer (important for Streamlit)
     uploaded_file.seek(0)
