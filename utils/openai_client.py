@@ -1,12 +1,18 @@
-import os
-import openai
+"""OpenAI client helpers for field extraction functions."""
+
+from __future__ import annotations
+
 import json
-import requests
+import os
+
+from openai import OpenAI
 
 # Load secrets from environment or .streamlit/secrets.toml (Streamlit macht das automatisch)
-openai.api_key = os.getenv("OPENAI_API_KEY") or None
-if hasattr(openai, "organization"):
-    openai.organization = os.getenv("OPENAI_ORG") or None
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+    organization=os.getenv("OPENAI_ORG"),
+)
+
 
 # Funktion für Option 1: Klassisches Function Calling
 def call_extract_fields_function_calling(text, language="de"):
@@ -17,34 +23,44 @@ def call_extract_fields_function_calling(text, language="de"):
             "type": "object",
             "properties": {
                 "text": {"type": "string", "description": "Job ad full text"},
-                "language": {"type": "string", "enum": ["en", "de"]}
+                "language": {"type": "string", "enum": ["en", "de"]},
             },
-            "required": ["text", "language"]
-        }
+            "required": ["text", "language"],
+        },
     }
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4o",  # Alternativ: "gpt-4" oder "gpt-3.5-turbo"
             messages=[
-                {"role": "system", "content": "You are an expert for extracting job ad data. Output strictly as function call."},
-                {"role": "user", "content": f"Extract all relevant job fields from this job ad: {text[:3000]}"}  # ggf. abschneiden!
+                {
+                    "role": "system",
+                    "content": "You are an expert for extracting job ad data. Output strictly as function call.",
+                },
+                {
+                    "role": "user",
+                    "content": f"Extract all relevant job fields from this job ad: {text[:3000]}",
+                },
             ],
-            functions=[function_def],
-            function_call={"name": "extract_job_fields"},
+            tools=[{"type": "function", "function": function_def}],
+            tool_choice={
+                "type": "function",
+                "function": {"name": "extract_job_fields"},
+            },
             temperature=0.2,
-            max_tokens=1000
+            max_tokens=1000,
         )
-        func_call = response.choices[0].message.get("function_call", {})
-        arguments = func_call.get("arguments", "{}")
+        tool_call = response.choices[0].message.tool_calls[0]
+        arguments = tool_call.function.arguments if tool_call else "{}"
         return json.loads(arguments)
     except Exception as e:
         return {"error": str(e)}
+
 
 # Funktion für Option 2: Responses API (Tool Loop)
 def call_extract_fields_responses_api(text, language="de"):
     # Beispielhaftes Mockup – für echten Einsatz OpenAI Assistants API verwenden
     # Responses API ist (noch) nur mit HTTP-Requests oder openai.beta nutzbar (bald nativ in openai)
-    # Hier ein Platzhalter-Call: 
+    # Hier ein Platzhalter-Call:
     # → In echt würdest du einen Thread anlegen, Tool(s) übergeben und Messages senden
     try:
         # Als Demo: Verwende die gleiche Extraktion wie oben (Simulation)

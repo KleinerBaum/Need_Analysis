@@ -11,7 +11,7 @@ mode = st.radio(
     "Extraction Mode",
     options=["Function Calling (ChatCompletion)", "Responses API (Tool Loop)"],
     index=0,
-    help="Option 1: Direktes Function Calling / Option 2: Responses API Tool Loop"
+    help="Option 1: Direktes Function Calling / Option 2: Responses API Tool Loop",
 )
 
 uploaded_file = st.file_uploader("Upload Job Ad (PDF)", type=["pdf"])
