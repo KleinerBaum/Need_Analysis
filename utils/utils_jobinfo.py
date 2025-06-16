@@ -27,6 +27,7 @@ def extract_text_from_pdf(file) -> str:
 def extract_text_from_docx(file) -> str:
     """Return text from a DOCX file including tables."""
 
+    file.seek(0)
     doc = docx.Document(file)
     lines = [para.text for para in doc.paragraphs]
 
@@ -61,6 +62,7 @@ def extract_text(file) -> str:
     if filetype == "docx":
         return extract_text_from_docx(file)
     if filetype == "txt":
+        file.seek(0)
         return file.read().decode("utf-8")
     raise ValueError("Unsupported file type")
 

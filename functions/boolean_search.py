@@ -17,5 +17,6 @@ def generate_boolean_search(fields: Dict[str, Any]) -> str:
         return "# Nicht genug Daten für Boolean-String"
 
     skill_part = " OR ".join([f'"{skill}"' for skill in skills])
-    query = f'({skill_part}) AND "{job_title}" AND {city}'
+    city_part = f" AND {city}" if city else ""
+    query = f'({skill_part}) AND "{job_title}"{city_part}'
     return query
