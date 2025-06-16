@@ -61,13 +61,12 @@ wizard_steps = [
     ("Verg\u00fctung / Compensation", wizard_step_7_compensation),
     ("Recruiting-Prozess / Recruitment", wizard_step_8_recruitment),
 ]
-step_labels = [label for label, _ in wizard_steps]
-step_idx = st.radio(
-    tr("Schritt ausw\u00e4hlen / Select Step", lang),
-    list(range(len(step_labels))),
-    format_func=lambda i: tr(step_labels[i], lang),
-    horizontal=True,
-)
+
+if "step_idx" not in st.session_state:
+    st.session_state["step_idx"] = 0
+
+step_idx = st.session_state["step_idx"]
+st.progress((step_idx + 1) / len(wizard_steps))
 
 # --- Wizard-Ansicht -------------------------------------------------------
 st.title("Recruitment Need Analysis Wizard")
@@ -79,6 +78,16 @@ st.info(
 )
 
 wizard_steps[step_idx][1]()
+
+col_prev, col_next = st.columns(2)
+with col_prev:
+    if st.button(tr("Zur\u00fcck / Back", lang), disabled=step_idx == 0):
+        st.session_state["step_idx"] = max(0, step_idx - 1)
+        st.experimental_rerun()  # type: ignore[attr-defined]
+with col_next:
+    if st.button(tr("Weiter / Next", lang), disabled=step_idx == len(wizard_steps) - 1):
+        st.session_state["step_idx"] = min(len(wizard_steps) - 1, step_idx + 1)
+        st.experimental_rerun()  # type: ignore[attr-defined]
 
 # --- Utility-Optionen nach dem Wizard ------------------------------------
 st.markdown("---")
