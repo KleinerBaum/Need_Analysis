@@ -65,7 +65,7 @@ pytest
 - Enhanced file extraction to reset pointers for DOCX and TXT files
 - Improved Boolean search generation without city input
 - Wizard navigation now uses Next/Back buttons and two-column layout for large steps
-- Added ESCO-based suggestions for tasks and skills based on job title
+
 
 ## Contributing
 
