@@ -172,13 +172,12 @@ def display_fields_summary() -> None:
             unsafe_allow_html=True,
         )
     if fields.get("parsed_data_raw"):
-        with st.expander(tr("Parsed Data Raw", lang), expanded=False):
-            st.text_area(
-                label=tr("Parsed Data Raw", lang),
-                value=fields["parsed_data_raw"],
-                key="parsed_data_raw_summary",
-                height=200,
-            )
+        st.text_area(
+            label=tr("Parsed Data Raw", lang),
+            value=fields["parsed_data_raw"],
+            key="parsed_data_raw_summary",
+            height=200,
+        )
 
 
 def display_fields_editable(prefix: str = "edit_") -> None:
@@ -207,13 +206,12 @@ def display_fields_editable(prefix: str = "edit_") -> None:
         used_keys.add(widget_key)
         st.text_input(key.replace("_", " ").title(), value, key=widget_key)
     if fields.get("parsed_data_raw"):
-        with st.expander(tr("Parsed Data Raw", lang), expanded=False):
-            st.text_area(
-                tr("Parsed Data Raw", lang),
-                fields["parsed_data_raw"],
-                key=f"{prefix}parsed_data_raw",
-                height=200,
-            )
+        st.text_area(
+            tr("Parsed Data Raw", lang),
+            fields["parsed_data_raw"],
+            key=f"{prefix}parsed_data_raw",
+            height=200,
+        )
 
 
 def export_fields_as_markdown() -> None:
