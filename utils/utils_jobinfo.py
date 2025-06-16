@@ -76,7 +76,9 @@ def display_fields_editable() -> None:
 def export_fields_as_markdown() -> None:
     """Provide a download link for the stored fields as Markdown."""
     fields = st.session_state.get("job_fields", {})
-    md = "\n".join(f"**{k.replace('_', ' ').capitalize()}:** {v}" for k, v in fields.items())
+    md = "\n".join(
+        f"**{k.replace('_', ' ').capitalize()}:** {v}" for k, v in fields.items()
+    )
     b64 = base64.b64encode(md.encode()).decode()
     href = (
         f'<a href="data:text/markdown;base64,{b64}" download="jobinfo.md">'
