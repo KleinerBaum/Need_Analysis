@@ -53,7 +53,12 @@ def extract_text(file) -> str:
 
 
 def basic_field_extraction(text: str) -> Dict[str, str]:
-    """Naive regex extraction of some fields from text."""
+    """Naive regex extraction of some fields from raw job text.
+
+    Besides ``job_title`` and ``company_name`` this function tries to detect
+    simple skill statements like ``Proficiency in Python and ...``. Detected
+    skills are stored comma separated in ``must_have_skills``.
+    """
 
     fields: Dict[str, str] = {}
 
@@ -70,6 +75,27 @@ def basic_field_extraction(text: str) -> Dict[str, str]:
     )
     if company_name:
         fields["company_name"] = company_name.group(2).strip()
+
+    # --- very small skill extraction -------------------------------------
+    cleaned_text = re.sub(r"e\.g\.,?", "", text, flags=re.IGNORECASE)
+    cleaned_text = re.sub(r"i\.e\.,?", "", cleaned_text, flags=re.IGNORECASE)
+    skill_phrases = re.findall(
+        r"(?i)(?:proficiency in|experience with|knowledge of|proficient in)\s+(.+?)(?:\.|\n)",
+        cleaned_text,
+    )
+    skills: list[str] = []
+    for phrase in skill_phrases:
+        clean = re.sub(r"\(e\.g\.,?", "", phrase)
+        clean = re.sub(r"[()]", ",", clean)
+        clean = re.sub(r"[\.\n]", "", clean)
+        clean = re.sub(r"\s+", " ", clean)
+        parts = re.split(r",| and | und |&", clean)
+        for part in parts:
+            part = part.strip()
+            if part and part not in skills:
+                skills.append(part)
+    if skills:
+        fields["must_have_skills"] = ", ".join(skills)
 
     return fields
 
