@@ -11,6 +11,7 @@ from utils.utils_jobinfo import (
     save_fields_to_session,
 )
 from utils.i18n import tr
+from utils.esco_client import search_skills
 import requests
 
 
@@ -251,6 +252,15 @@ def wizard_step_6_skills() -> None:
     lang = st.session_state.get("lang", "de")
     fields = st.session_state.get("job_fields", {})
     st.header(tr("6. Skills & Kompetenzen / Skills & Competencies", lang))
+    skill_query = st.text_input(
+        tr("Skill bei ESCO suchen / Search skill in ESCO", lang)
+    )
+    if skill_query:
+        suggestions = search_skills(skill_query, language=lang, limit=5)
+        if suggestions:
+            st.info(", ".join(suggestions))
+        else:
+            st.warning(tr("Keine Ergebnisse von ESCO", lang))
     display_fields_editable(prefix="step6_")
     fields["must_have_skills"] = st.text_area(
         tr("Must-have Skills *", lang), fields.get("must_have_skills", "")
