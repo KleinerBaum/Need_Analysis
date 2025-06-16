@@ -16,7 +16,9 @@ import streamlit as st
 
 def extract_text_from_pdf(file) -> str:
     """Return plain text from a PDF file."""
-    doc = fitz.open(stream=file, filetype="pdf")
+    file.seek(0)
+    data = file.read()
+    doc = fitz.open(stream=data, filetype="pdf")
     return "".join(page.get_text() for page in doc)
 
 
