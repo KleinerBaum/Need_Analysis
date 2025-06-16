@@ -23,6 +23,9 @@ from wizard_steps import (
 
 st.set_page_config(page_title="Vacalyser Wizard", layout="wide")
 
+# Reset widget key tracking each run to avoid stale keys
+st.session_state["_used_widget_keys"] = set()
+
 # --- Global language toggle ------------------------------------------------
 if "lang" not in st.session_state:
     st.session_state["lang"] = "de"
