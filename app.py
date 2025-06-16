@@ -83,11 +83,11 @@ col_prev, col_next = st.columns(2)
 with col_prev:
     if st.button(tr("Zur\u00fcck / Back", lang), disabled=step_idx == 0):
         st.session_state["step_idx"] = max(0, step_idx - 1)
-        st.experimental_rerun()  # type: ignore[attr-defined]
+        st.rerun()
 with col_next:
     if st.button(tr("Weiter / Next", lang), disabled=step_idx == len(wizard_steps) - 1):
         st.session_state["step_idx"] = min(len(wizard_steps) - 1, step_idx + 1)
-        st.experimental_rerun()  # type: ignore[attr-defined]
+        st.rerun()
 
 # --- Utility-Optionen nach dem Wizard ------------------------------------
 st.markdown("---")
