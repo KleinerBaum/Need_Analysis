@@ -86,19 +86,3 @@ Codex can only push changes if a Git remote and GitHub credentials are configure
 
 ---
 
-
-
-## 5  How Codex Should Work
-
-| Step                      | Action                                                                                  |
-| ------------------------- | --------------------------------------------------------------------------------------- |
-| **Locate code**           | Use the folder map above; grep by function/class names when unsure.                     |
-| **Small tasks**           | Large refactors → break into several PRs.                                               |
-| **Run gates**             | Always execute the *Quality Gates* exactly as scripted. Stop if any fail, fix, re‑run.  |
-| **Verify output**         | For UI work run `streamlit run app.py` headless (CI does this) and ensure no traceback. |
-| **Respect style**         | If `ruff` or `black` fail, call auto‑fix then commit.                                   |
-| **Add tests**             | Minimum: cover the new branch/bug path; prefer >90 % diff coverage.                     |
-| **No hard‑coded secrets** | Read via `os.getenv` or Streamlit secrets.                                              |
-| **Proxy trust**           | When making network calls in tests, respect `$CODEX_PROXY_CERT`.                        |
-
----
