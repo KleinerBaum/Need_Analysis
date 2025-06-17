@@ -189,7 +189,9 @@ def wizard_step_4_role() -> None:
             try:
                 start_value = datetime.datetime.fromisoformat(start_value).date()
             except ValueError:
-                start_value = None
+                start_value = datetime.date.today()
+        elif not isinstance(start_value, datetime.date):
+            start_value = datetime.date.today()
         fields["date_of_employment_start"] = st.date_input(
             tr("Startdatum / Start Date", lang),
             start_value,

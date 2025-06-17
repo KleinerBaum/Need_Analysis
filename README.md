@@ -69,6 +69,7 @@ pytest
 - Improved Boolean search generation without city input
 - Wizard navigation now uses Next/Back buttons and two-column layout for large steps
 - Replaced deprecated `st.experimental_rerun()` with `st.rerun()` for Streamlit 1.45+
+- Default start date to today's date when none stored
 
 
 ## Contributing
