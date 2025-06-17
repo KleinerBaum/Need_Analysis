@@ -14,6 +14,10 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
+The versions are pinned for reproducibility:
+`streamlit==1.45.1`, `PyMuPDF==1.26.1`, `openai==1.88.0`,
+`requests==2.32.4`, `python-docx==1.2.0`, and
+`types-requests==2.32.4.20250611`.
 
 ## Running
 
