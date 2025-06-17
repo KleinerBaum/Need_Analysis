@@ -1,152 +1,141 @@
-Vacalyser AGENTS Guide
-A quick-reference for anyone wiring up, extending, or testing the LLM-powered workflow.
+# AGENTS.md – Guide for Codex Agents 🪄
 
-1 · Purpose
-This file collects all “How do I talk to / wire up the Vacalyser agents?” know-how in one concise place.
-Keep it updated whenever you add a new tool, model, or environment knob.
+> **Repository:** [https://github.com/KleinerBaum/Need\_Analysis](https://github.com/KleinerBaum/Need_Analysis)
+>
+> This file explains **where** Codex should work, **how** to set up the environment, **what** quality gates to run, and **how** to submit code changes so they blend in perfectly with the existing project standards.
 
-2 · Project recap (TL;DR)
-vacalyser/
-├─ app.py                    # Streamlit entry-point (Landing + Wizard)
-├─ components/               # Re-usable Streamlit widgets
-├─ logic/                    # Business logic + processors + DAG
-├─ models/                   # Pydantic schemas (JobSpec, SalaryBand…)
-├─ services/
-│   ├─ vacancy_agent.py      # ↖️  LLM orchestration / Function-calling
-│   └─ vector_search.py      # FAISS wrapper (skills, benchmarks)
-└─ utils/                    # Config, prompt templates, tool_registry …
-The agent lives in services/vacancy_agent.py and uses OpenAI function-calling to:
+---
 
-Decide which tool to call (scrape_company_site, extract_text_from_file, …)
+## 1  Code‑map & Key Folders
 
-Receive tool results as a function message
+| Folder        | Purpose                                              |
+| ------------- | ---------------------------------------------------- |
+| `app.py`      | Streamlit entry point (landing page + wizard)        |
+| `pages/`      | Static multipage content (About Us, Impressum…)      |
+| `components/` | Re‑usable UI widgets and wizard sections             |
+| `logic/`      | Business logic (trigger engine, file parsers)        |
+| `services/`   | External services (OpenAI agent, FAISS vector store) |
+| `models/`     | Pydantic data‑schemas for vacancy profiles           |
+| `state/`      | Session‑state helpers                                |
+| `utils/`      | Global config, prompt templates                      |
+| `tests/`      | Pytest suite (unit, integration, smoke)              |
 
-Respond with JSON matching models.JobSpec (validated & repaired here)
+👉 **Stay inside these folders** when adding or editing code. Avoid creating new top‑level paths unless absolutely necessary.
 
-3 · Environment variables
-Variable	Example	Purpose
-STREAMLIT_ENV	development	Toggle debug / prod settings
-LANGUAGE	en / de	Default UI language
-DEFAULT_MODEL	gpt-4o	Fallback model if none is provided
-VECTOR_STORE_PATH	./vector_store	Path to FAISS directory
-OPENAI_MODEL	gpt-4o-mini	Main chat model for extraction / enrichment
-SALARY_ESTIMATION_MODEL	gpt-4o-mini	Fast model for salary benchmarks
-USE_ASSISTANTS_API	0/1 Use OpenAI Assistants + built-in tools
+---
 
-Tip: Load from .env locally, but rely on Streamlit secrets.toml in prod:
+## 2  Dev Environment (setup.sh)
 
-toml
-Kopieren
-Bearbeiten
-# .streamlit/secrets.toml
-[openai]
-OPENAI_API_KEY = "sk-..."
-OPENAI_MODEL   = "gpt-4o"
-4 · Secrets (never commit)
-OPENAI_API_KEY
+The CI/CD pipeline expects the following tools:
 
-OPENAI_ORG_ID (optional)
+```bash
+# Install static type checker
+pip install pyright
 
-DATABASE_URL (optional for future persistence)
-
-SECRET_KEY (if you add Flask/Django endpoints)
-
-5 · Installing & running
-bash
-Kopieren
-Bearbeiten
+# Install project dependencies
 pip install -r requirements.txt
-streamlit run app.py          # launches the wizard
-Create empty folders the first time:
 
-bash
-Kopieren
-Bearbeiten
-mkdir -p uploads logs vector_store
-6 · Agent design guidelines
-6.1 Registered tools
-Add a new callable like so:
+# → If the repo switches to Poetry, use:
+# poetry install --with test
 
-python
-Kopieren
-Bearbeiten
-from vacalyser.utils.tool_registry import tool
+# Optionally: JavaScript helpers
+# pnpm install  # only needed if you touch /assets tooling
+```
 
-@tool(
-    name="my_cool_fetcher",
-    description="Fetches XYZ data from an internal API.",
-    parameters={
-        "type": "object",
-        "properties": {
-            "query": {"type": "string", "description": "Search term"}
-        },
-        "required": ["query"],
-    },
-    return_type="string",
-)
-def my_cool_fetcher(query: str) -> str:
-    ...
-It will auto-appear in tool_registry.list_openai_functions() and therefore be available to the agent.
+> **Note:** Setup scripts run in their **own** Bash session. Environment variables set here (e.g. `export`) will **not** leak to the agent. Persist long‑lived secrets in `~/.bashrc` or populate them inside the agent prompt.
 
-6.2 LLM rules of thumb
-Task	Model	Temp	Max tokens	Comment
-Parsing raw ads → JobSpec	gpt-4o	0.2	1500	High accuracy, function-calling enabled
-Quick suggestions (tasks, skills)	gpt-4o-mini	0.3	200	Cheap & fast
-Final polished job-ad generation	gpt-4o (or 4o-high)	0.5	1200	Richer language, multilingual
+### Proxy configuration
 
-Always ask for structured JSON when possible; unstructured markdown costs more to post-process.
+All outbound traffic goes through `http://proxy:8080` and must trust the cert at `$CODEX_PROXY_CERT`. Tools such as pip, curl, npm already respect these variables.
 
-7 · Mock / offline mode
-When STREAMLIT_ENV=development and OPENAI_API_KEY is absent,
-services/vacancy_agent.py will automatically fall back to local mocks:
+---
 
-scrape_company_site → returns {title: "ACME GmbH", description: "We build rockets"}
+## 3  Quality Gates (test.sh)
 
-extract_text_from_file → parses file but skips LLM post-processing
+Run these **exact** commands before committing:
 
-LLM calls → replaced by fixtures in tests/mocks/
+```bash
+# 1  Lint & style
+ruff check .                # must be 100 % clean
+black --check .             # auto‑format if needed
 
-Use this to write fast CI tests without external calls.
+# 2  Static typing
+pyright .                   # or mypy . – both must pass
 
-8 · Prompt patterns
-Extraction –
-"Extract ALL fields defined in JobSpec as JSON. Omit commentary. If unknown, set value to null."
+# 3  Tests
+pytest -q                   # green test‑suite required
+```
 
-Follow-up questions –
-"For every missing ★ field, formulate ONE concise question in {LANGUAGE}. Use terminology from data/question_nodes.yml"
+If you add or refactor code **you must also add/adjust tests** in `tests/`. Mock all external (OpenAI) calls!
 
-Skill enrichment –
-"Given must_have_skills, suggest 3 complementary nice_to_have_skills via ESCO synonyms."
+---
 
-Generation –
-"Write a {ad_length_preference} job ad in {language_of_ad}…" (template in utils/prompts.py)
+## 4  Contribution Workflow
 
-Keep temperature low for deterministic JSON, higher for creative text.
+1. **Branching**: work on `dev` or a feature branch `feat/<short-name>`.
+2. **Commits** follow Conventional Commits, e.g. `feat: add skill drag‑and‑drop`.
+3. **PR title**: `[Need_Analysis] <brief description>`.
+4. **CI passes** (lint, type, tests) before merge.
+5. **Update docs** (README, AGENTS.md) when public behaviour or API changes.
 
-9 · Testing & CI
-Unit tests – target processors & file parsers (pytest -q).
+---
 
-Streamlit smoke test – streamlit run app.py --server.headless true in GitHub Actions.
+## 5  How Codex Should Work
 
-Lint / Type-check – flake8 + black --check + mypy .
+| Step                      | Action                                                                                  |
+| ------------------------- | --------------------------------------------------------------------------------------- |
+| **Locate code**           | Use the folder map above; grep by function/class names when unsure.                     |
+| **Small tasks**           | Large refactors → break into several PRs.                                               |
+| **Run gates**             | Always execute the *Quality Gates* exactly as scripted. Stop if any fail, fix, re‑run.  |
+| **Verify output**         | For UI work run `streamlit run app.py` headless (CI does this) and ensure no traceback. |
+| **Respect style**         | If `ruff` or `black` fail, call auto‑fix then commit.                                   |
+| **Add tests**             | Minimum: cover the new branch/bug path; prefer >90 % diff coverage.                     |
+| **No hard‑coded secrets** | Read via `os.getenv` or Streamlit secrets.                                              |
+| **Proxy trust**           | When making network calls in tests, respect `$CODEX_PROXY_CERT`.                        |
 
-Remember to mock the OpenAI module (unittest.mock.patch("openai.ChatCompletion.create", …)).
+---
 
-10 · Contributing checklist
- New tool decorated with @tool, documented here
+## 6  Validation Checklist
 
- Model changes mirrored in JobSpec and wizard keys
+* [ ] `ruff check .` passes
+* [ ] `black --check .` passes
+* [ ] `pyright .` (or `mypy .`) passes
+* [ ] `pytest -q` all green
+* [ ] docs updated (if public interface changed)
+* [ ] no TODOs / print-debug left
 
- Added/updated tests
+---
 
- pre-commit run --all-files passes
+## 7  Common Commands Cheat‑sheet
 
- Updated this file if behaviour or env-vars changed
+```bash
+# Start app (local dev)
+streamlit run app.py
 
-11\xa0\xb7\xa0Assistants & Responses API
-When `USE_ASSISTANTS_API=1`, `services/vacancy_agent.py` interacts with
-OpenAI's Assistants endpoints instead of plain chat completions. A temporary
-assistant is created with the built-in `retrieval` and `code_interpreter` tools.
-The run is polled via the Responses API until completed, then the final message
-content is returned. This allows richer file handling and code execution without
-shipping custom tools.
+# Single test case
+pytest tests/test_file_tools.py::test_extract_text_from_pdf -q
+
+# Reformat everything
+black . && ruff check . --fix
+```
+
+---
+
+## 8  Example PR Message Template
+
+```markdown
+### 📌 Summary
+Refactors trigger_engine to support conditional sub‑sections.
+
+### 🔍 Changes
+- Add `get_missing_sections()` util
+- Update tests (100 % passing)
+- Docs: README + AGENTS.md
+
+### ✅ Checklist
+- [x] Lint & black
+- [x] Pyright clean
+- [x] Tests pass
+```
+
+Happy coding 🤖
