@@ -9,8 +9,7 @@ from utils.utils_jobinfo import (
     display_fields_editable,
 )
 from utils.apply_edited_raw import apply_edited_raw
-display_fields_editable()   # User kann Rohtext anpassen
-apply_edited_raw()          # Felder neu befüllen
+
 from utils.i18n import tr
 from wizard_steps import (
     wizard_step_1_basic,
@@ -23,7 +22,8 @@ from wizard_steps import (
     wizard_step_8_recruitment,
     wizard_step_9_publication,
 )
-
+display_fields_editable()   # User kann Rohtext anpassen
+apply_edited_raw()          # Felder neu befüllen
 LOGO_PATH = "images/sthree.png"
 BACKGROUND_PATH = "images/AdobeStock_506577005.jpeg"
 
