@@ -21,5 +21,6 @@ def extract_text_from_pdf(uploaded_file: BinaryIO) -> str:
     """
 
     uploaded_file.seek(0)
-    doc = fitz.open(stream=uploaded_file.read(), filetype="pdf")
-    return "\n".join(page.get_text() for page in doc)
+    with fitz.open(stream=uploaded_file.read(), filetype="pdf") as doc:
+        text = "\n".join(page.get_text() for page in doc)
+    return text
