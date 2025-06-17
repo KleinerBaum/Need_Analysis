@@ -58,7 +58,7 @@ Run linting and typing checks:
 ```bash
 ruff check .
 black .
-mypy .
+pyright .
 ```
 
 Run tests (once they exist):
