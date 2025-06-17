@@ -22,8 +22,9 @@ from wizard_steps import (
     wizard_step_8_recruitment,
     wizard_step_9_publication,
 )
-display_fields_editable()   # User kann Rohtext anpassen
-apply_edited_raw()          # Felder neu befüllen
+
+display_fields_editable()  # User kann Rohtext anpassen
+apply_edited_raw()  # Felder neu befüllen
 LOGO_PATH = "images/sthree.png"
 BACKGROUND_PATH = "images/AdobeStock_506577005.jpeg"
 
@@ -67,13 +68,13 @@ if "job_fields" not in st.session_state:
 
 # --- Wizard-Step Navigation ----------------------------------------------
 wizard_steps = [
-    ("Grunddaten / Basic Data", wizard_step_1_basic),
+    ("Basisinformationen / Basic Data", wizard_step_1_basic),
     ("Unternehmen / Company Info", wizard_step_2_company),
     ("Abteilung / Department", wizard_step_3_department),
     ("Rolle / Role", wizard_step_4_role),
     ("Aufgaben / Tasks", wizard_step_5_tasks),
     ("Skills / Kompetenzen", wizard_step_6_skills),
-    ("Verg\u00fctung / Compensation", wizard_step_7_compensation),
+    ("Vergütung / Compensation", wizard_step_7_compensation),
     ("Recruiting-Prozess / Recruitment", wizard_step_8_recruitment),
     ("Sprache & Veröffentlichung", wizard_step_9_publication),
 ]
