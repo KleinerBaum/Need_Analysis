@@ -50,35 +50,6 @@ All outbound traffic goes through `http://proxy:8080` and must trust the cert at
 
 ---
 
-## 3  Quality Gates (test.sh)
-
-Run these **exact** commands before committing:
-
-```bash
-# 1  Lint & style
-ruff check .                # must be 100 % clean
-black --check .             # auto‑format if needed
-
-# 2  Static typing
-pyright .                   # or mypy . – both must pass
-
-# 3  Tests
-pytest -q                   # green test‑suite required
-```
-
-If you add or refactor code **you must also add/adjust tests** in `tests/`. Mock all external (OpenAI) calls!
-
----
-
-## 4  Contribution Workflow
-
-1. **Branching**: work on `dev` or a feature branch `feat/<short-name>`.
-2. **Commits** follow Conventional Commits, e.g. `feat: add skill drag‑and‑drop`.
-3. **PR title**: `[Need_Analysis] <brief description>`.
-4. **CI passes** (lint, type, tests) before merge.
-5. **Update docs** (README, AGENTS.md) when public behaviour or API changes.
-
----
 
 ## 5  How Codex Should Work
 
