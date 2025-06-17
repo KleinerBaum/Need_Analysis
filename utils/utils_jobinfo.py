@@ -7,7 +7,7 @@ import base64
 import re
 from typing import Dict, Optional
 
-from keys import ALL_STEP_KEYS
+from utils.keys import ALL_STEP_KEYS
 
 from utils.i18n import tr
 
