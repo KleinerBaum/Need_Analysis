@@ -14,21 +14,25 @@ import streamlit as st
 # ---------------------------------------------------------------------------
 # Language & audience toggle
 # ---------------------------------------------------------------------------
-lang = st.radio(
-    "🌐 Sprache / Language", ("Deutsch", "English"), horizontal=True, key="lang"
+lang_label = st.radio(
+    "🌐 Sprache / Language",
+    ("Deutsch", "English"),
+    horizontal=True,
+    key="tech_lang",
 )
+lang = "de" if lang_label == "Deutsch" else "en"
 audience = st.radio(
     "🎯 Zielgruppe / Audience",
     (
-        ("Tech-interessiert", "Allgemein verständlich")
-        if lang == "Deutsch"
-        else ("Tech-savvy", "General public")
-    ),
-    horizontal=True,
-    key="audience",
-)
-
-TECH_AUDIENCE = "Tech-interessiert" if lang == "Deutsch" else "Tech-savvy"
+        ("Tech-interessiert", "Allgemein verständlich")␊
+        if lang == "de"
+        else ("Tech-savvy", "General public")␊
+    ),␊
+    horizontal=True,␊
+    key="audience",␊
+)␊
+␊
+TECH_AUDIENCE = "Tech-interessiert" if lang == "de" else "Tech-savvy"
 
 # ---------------------------------------------------------------------------
 # Technology catalogue
@@ -160,16 +164,15 @@ tech_info = {
 # ---------------------------------------------------------------------------
 # Wizard flow definition
 # ---------------------------------------------------------------------------
-wizard_steps = [
-    ("Intake", "Job‑Titel & Dokumente" if lang == "Deutsch" else "Job title & docs"),
-    ("Parse", "AI‑Parsing"),
-    ("Enrich", "ESCO‑Mapping"),
-    ("QA", "Dynamic Q&A"),
-    ("Draft", "Profil‑Entwurf" if lang == "Deutsch" else "Draft profile"),
-    ("Review", "Freigabe" if lang == "Deutsch" else "Review"),
-    ("Export", "Export (PDF/MD)"),
-]
-
+wizard_steps = [␊
+    ("Intake", "Job‑Titel & Dokumente" if lang == "de" else "Job title & docs"),
+    ("Parse", "AI‑Parsing"),␊
+    ("Enrich", "ESCO‑Mapping"),␊
+    ("QA", "Dynamic Q&A"),␊
+    ("Draft", "Profil‑Entwurf" if lang == "de" else "Draft profile"),
+    ("Review", "Freigabe" if lang == "de" else "Review"),
+    ("Export", "Export (PDF/MD)"),␊
+]␊
 
 def render_wizard_graph() -> None:
     dot = (
@@ -188,45 +191,45 @@ def render_wizard_graph() -> None:
 # ---------------------------------------------------------------------------
 # Layout
 # ---------------------------------------------------------------------------
-if audience == TECH_AUDIENCE and lang == "Deutsch":
-    title = "🛠️ Technischer Deep Dive"
-elif audience == TECH_AUDIENCE:
-    title = "🛠️ Technology Deep Dive"
-elif lang == "Deutsch":
-    title = "🛠️ Technologischer Überblick"
+if audience == TECH_AUDIENCE and lang == "de":
+    title = "🛠️ Technischer Deep Dive"␊
+elif audience == TECH_AUDIENCE:␊
+    title = "🛠️ Technology Deep Dive"␊
+elif lang == "de":
+    title = "🛠️ Technologischer Überblick"␊
 else:
     title = "🛠️ Technology Overview"
 
 st.title(title)
 
-intro = (
-    "Nachfolgend findest du die Schlüsseltechnologien, die Vacalyser antreiben, "
-    "sowie eine Grafik, die den Discovery‑Prozess Schritt für Schritt veranschaulicht."
-    if lang == "Deutsch"
-    else "Below you can explore the core technologies powering Vacalyser together with a graph "
-    "illustrating each step of the discovery process."
-)
+intro = (␊
+    "Nachfolgend findest du die Schlüsseltechnologien, die Vacalyser antreiben, "␊
+    "sowie eine Grafik, die den Discovery‑Prozess Schritt für Schritt veranschaulicht."␊
+    if lang == "de"
+    else "Below you can explore the core technologies powering Vacalyser together with a graph "␊
+    "illustrating each step of the discovery process."␊
+)␊
 
 st.markdown(intro)
 
-# ─── Technology cards ───
-for tech, desc in tech_info[lang][audience]:
-    st.markdown(f"### 🔹 {tech}\n{desc}")
+# ─── Technology cards ───␊
+for tech, desc in tech_info[lang_label][audience]:
+    st.markdown(f"### 🔹 {tech}\n{desc}")␊
 
 # ─── Wizard flow graph for tech audience ───
 if audience == TECH_AUDIENCE:
     st.divider()
     st.markdown(
-        "#### 🔄 Wizard‑Flow & State Machine"
-        if lang == "Deutsch"
-        else "#### 🔄 Wizard Flow & State Machine"
+        "#### 🔄 Wizard‑Flow & State Machine"␊
+        if lang == "de"
+        else "#### 🔄 Wizard Flow & State Machine"␊
     )
     render_wizard_graph()
 
-st.divider()
-
-st.info(
-    "Die gezeigte Architektur ist modular erweiterbar und bildet eine zukunftssichere Basis für hochskalierbare Recruiting‑Workflows."
-    if lang == "Deutsch"
-    else "The presented stack is modular and future‑proof, enabling highly scalable recruiting workflows with minimal operational overhead."
-)
+st.divider()␊
+␊
+st.info(␊
+    "Die gezeigte Architektur ist modular erweiterbar und bildet eine zukunftssichere Basis für hochskalierbare Recruiting‑Workflows."␊
+    if lang == "de"
+    else "The presented stack is modular and future‑proof, enabling highly scalable recruiting workflows with minimal operational overhead."␊
+)␊
