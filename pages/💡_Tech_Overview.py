@@ -174,6 +174,7 @@ wizard_steps = [
     ("Export", "Export (PDF/MD)"),
 ]
 
+
 def render_wizard_graph() -> None:
     dot = (
         "digraph wizard {\n"
