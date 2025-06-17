@@ -24,14 +24,14 @@ lang = "de" if lang_label == "Deutsch" else "en"
 audience = st.radio(
     "🎯 Zielgruppe / Audience",
     (
-        ("Tech-interessiert", "Allgemein verständlich")␊
+        ("Tech-interessiert", "Allgemein verständlich")
         if lang == "de"
-        else ("Tech-savvy", "General public")␊
-    ),␊
-    horizontal=True,␊
-    key="audience",␊
-)␊
-␊
+        else ("Tech-savvy", "General public")
+    ),
+    horizontal=True,
+    key="audience",
+)
+
 TECH_AUDIENCE = "Tech-interessiert" if lang == "de" else "Tech-savvy"
 
 # ---------------------------------------------------------------------------
@@ -164,15 +164,15 @@ tech_info = {
 # ---------------------------------------------------------------------------
 # Wizard flow definition
 # ---------------------------------------------------------------------------
-wizard_steps = [␊
+wizard_steps = [
     ("Intake", "Job‑Titel & Dokumente" if lang == "de" else "Job title & docs"),
-    ("Parse", "AI‑Parsing"),␊
-    ("Enrich", "ESCO‑Mapping"),␊
-    ("QA", "Dynamic Q&A"),␊
+    ("Parse", "AI‑Parsing"),
+    ("Enrich", "ESCO‑Mapping"),
+    ("QA", "Dynamic Q&A"),
     ("Draft", "Profil‑Entwurf" if lang == "de" else "Draft profile"),
     ("Review", "Freigabe" if lang == "de" else "Review"),
-    ("Export", "Export (PDF/MD)"),␊
-]␊
+    ("Export", "Export (PDF/MD)"),
+]
 
 def render_wizard_graph() -> None:
     dot = (
@@ -192,44 +192,44 @@ def render_wizard_graph() -> None:
 # Layout
 # ---------------------------------------------------------------------------
 if audience == TECH_AUDIENCE and lang == "de":
-    title = "🛠️ Technischer Deep Dive"␊
-elif audience == TECH_AUDIENCE:␊
-    title = "🛠️ Technology Deep Dive"␊
+    title = "🛠️ Technischer Deep Dive"
+elif audience == TECH_AUDIENCE:
+    title = "🛠️ Technology Deep Dive"
 elif lang == "de":
-    title = "🛠️ Technologischer Überblick"␊
+    title = "🛠️ Technologischer Überblick"
 else:
     title = "🛠️ Technology Overview"
 
 st.title(title)
 
-intro = (␊
-    "Nachfolgend findest du die Schlüsseltechnologien, die Vacalyser antreiben, "␊
-    "sowie eine Grafik, die den Discovery‑Prozess Schritt für Schritt veranschaulicht."␊
+intro = (
+    "Nachfolgend findest du die Schlüsseltechnologien, die Vacalyser antreiben, "
+    "sowie eine Grafik, die den Discovery‑Prozess Schritt für Schritt veranschaulicht."
     if lang == "de"
-    else "Below you can explore the core technologies powering Vacalyser together with a graph "␊
-    "illustrating each step of the discovery process."␊
-)␊
+    else "Below you can explore the core technologies powering Vacalyser together with a graph "
+    "illustrating each step of the discovery process."
+)
 
 st.markdown(intro)
 
-# ─── Technology cards ───␊
+# ─── Technology cards ───
 for tech, desc in tech_info[lang_label][audience]:
-    st.markdown(f"### 🔹 {tech}\n{desc}")␊
+    st.markdown(f"### 🔹 {tech}\n{desc}")
 
 # ─── Wizard flow graph for tech audience ───
 if audience == TECH_AUDIENCE:
     st.divider()
     st.markdown(
-        "#### 🔄 Wizard‑Flow & State Machine"␊
+        "#### 🔄 Wizard‑Flow & State Machine"
         if lang == "de"
-        else "#### 🔄 Wizard Flow & State Machine"␊
+        else "#### 🔄 Wizard Flow & State Machine"
     )
     render_wizard_graph()
 
-st.divider()␊
-␊
-st.info(␊
-    "Die gezeigte Architektur ist modular erweiterbar und bildet eine zukunftssichere Basis für hochskalierbare Recruiting‑Workflows."␊
+st.divider()
+
+st.info(
+    "Die gezeigte Architektur ist modular erweiterbar und bildet eine zukunftssichere Basis für hochskalierbare Recruiting‑Workflows."
     if lang == "de"
-    else "The presented stack is modular and future‑proof, enabling highly scalable recruiting workflows with minimal operational overhead."␊
-)␊
+    else "The presented stack is modular and future‑proof, enabling highly scalable recruiting workflows with minimal operational overhead."
+)
