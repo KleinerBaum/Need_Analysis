@@ -48,29 +48,6 @@ pip install -r requirements.txt
 
 All outbound traffic goes through `http://proxy:8080` and must trust the cert at `$CODEX_PROXY_CERT`. Tools such as pip, curl, npm already respect these variables.
 
----
-
-## 3  GitHub Remote & Token
-
-Codex can only push changes if a Git remote and GitHub credentials are configured.
-
-1. Add the project remote:
-
-   ```bash
-   git remote add origin https://github.com/KleinerBaum/Need_Analysis.git
-   ```
-
-2. Generate a personal access token from GitHub (Settings → **Developer settings** → **Personal access tokens**) and export it so Git can authenticate:
-
-   ```bash
-   export GITHUB_TOKEN=<your token>
-   ```
-
-   Place the export in `~/.bashrc` if you need it for future sessions.
-
----
-
-
 ## 5  How Codex Should Work
 
 | Step                      | Action                                                                                  |
