@@ -18,7 +18,6 @@
 | `models/`     | Pydantic data‑schemas for vacancy profiles           |
 | `state/`      | Session‑state helpers                                |
 | `utils/`      | Global config, prompt templates                      |
-| `tests/`      | Pytest suite (unit, integration, smoke)              |
 
 👉 **Stay inside these folders** when adding or editing code. Avoid creating new top‑level paths unless absolutely necessary.
 
@@ -65,48 +64,3 @@ All outbound traffic goes through `http://proxy:8080` and must trust the cert at
 | **Proxy trust**           | When making network calls in tests, respect `$CODEX_PROXY_CERT`.                        |
 
 ---
-
-## 6  Validation Checklist
-
-* [ ] `ruff check .` passes
-* [ ] `black --check .` passes
-* [ ] `pyright .` (or `mypy .`) passes
-* [ ] `pytest -q` all green
-* [ ] docs updated (if public interface changed)
-* [ ] no TODOs / print-debug left
-
----
-
-## 7  Common Commands Cheat‑sheet
-
-```bash
-# Start app (local dev)
-streamlit run app.py
-
-# Single test case
-pytest tests/test_file_tools.py::test_extract_text_from_pdf -q
-
-# Reformat everything
-black . && ruff check . --fix
-```
-
----
-
-## 8  Example PR Message Template
-
-```markdown
-### 📌 Summary
-Refactors trigger_engine to support conditional sub‑sections.
-
-### 🔍 Changes
-- Add `get_missing_sections()` util
-- Update tests (100 % passing)
-- Docs: README + AGENTS.md
-
-### ✅ Checklist
-- [x] Lint & black
-- [x] Pyright clean
-- [x] Tests pass
-```
-
-Happy coding 🤖
