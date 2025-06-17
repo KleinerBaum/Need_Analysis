@@ -29,7 +29,7 @@ background from `images/AdobeStock_506577005.jpeg` with matching accent colours.
 Optional settings used in `utils/openai_client.py`:
 
 - `OPENAI_API_KEY`
-- `OPENAI_ORG`
+- `OPENAI_ORG_ID`
 
 Define them in your shell or inside `.streamlit/secrets.toml`.
 
