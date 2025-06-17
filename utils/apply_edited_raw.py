@@ -10,6 +10,7 @@ Because it re‑uses *basic_field_extraction* you only have to maintain a single
 extraction logic.  If you later switch to spaCy, GPT, etc. you can do so inside
 *basic_field_extraction* without touching this glue code.
 """
+
 from __future__ import annotations
 
 import streamlit as st
