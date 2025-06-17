@@ -81,3 +81,9 @@ pytest
 - Use feature branches named `feat/<description>` and open PRs against `dev`.
 - Write Conventional Commit messages (`feat:`, `fix:`, etc.).
 
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+app.py
