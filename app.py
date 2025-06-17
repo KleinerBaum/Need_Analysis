@@ -8,6 +8,9 @@ from utils.utils_jobinfo import (
     display_all_fields_multiline_copy,
     display_fields_editable,
 )
+from utils.apply_edited_raw import apply_edited_raw
+display_fields_editable()   # User kann Rohtext anpassen
+apply_edited_raw()          # Felder neu befüllen
 from utils.i18n import tr
 from wizard_steps import (
     wizard_step_1_basic,
