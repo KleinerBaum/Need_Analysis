@@ -22,13 +22,13 @@ from wizard_steps import (
     wizard_step_8_recruitment,
     wizard_step_9_publication,
 )
+st.set_page_config(page_title="Vacalyser Wizard", layout="wide")
 
 display_fields_editable()  # User kann Rohtext anpassen
 apply_edited_raw()  # Felder neu befüllen
 LOGO_PATH = "images/sthree.png"
 BACKGROUND_PATH = "images/AdobeStock_506577005.jpeg"
 
-st.set_page_config(page_title="Vacalyser Wizard", layout="wide")
 
 st.image(LOGO_PATH, width=200)
 
