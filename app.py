@@ -1,5 +1,5 @@
 import streamlit as st
-from field_map import WizardStep, get_fields_for_step, get_fields_by_group
+from utils.field_map import WizardStep, get_fields_for_step, get_fields_by_group
 
 st.set_page_config("Vacalyser Vacancy Data Wizard", page_icon="📝", layout="wide")
 st.title("Vacalyser Vacancy Data Wizard")
