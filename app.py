@@ -1,124 +1,63 @@
-"""Streamlit entry point for the Vacalyser wizard."""
-
-from __future__ import annotations
-
 import streamlit as st
+from field_map import WizardStep, get_fields_for_step, get_fields_by_group
 
-from utils.utils_jobinfo import (
-    display_all_fields_multiline_copy,
-    display_fields_editable,
-)
-from utils.apply_edited_raw import apply_edited_raw
+st.set_page_config("Vacalyser Vacancy Data Wizard", page_icon="📝", layout="wide")
+st.title("Vacalyser Vacancy Data Wizard")
+st.info("Fill in each section below. Data is saved for all toolkit tools.")
 
-from utils.i18n import tr
-from wizard_steps import (
-    wizard_step_1_basic,
-    wizard_step_2_company,
-    wizard_step_3_department,
-    wizard_step_4_role,
-    wizard_step_5_tasks,
-    wizard_step_6_skills,
-    wizard_step_7_compensation,
-    wizard_step_8_recruitment,
-    wizard_step_9_publication,
-)
-st.set_page_config(page_title="Vacalyser Wizard", layout="wide")
+# --- Wizard Main Steps ---
+for step in WizardStep:
+    with st.expander(f"{step.value.replace('_', ' ').title()}", expanded=(step == list(WizardStep)[0])):
+        fields = get_fields_for_step(step)
+        cols = st.columns(2)
+        for idx, field in enumerate(fields):
+            k, label, widget = field["key"], field["label"], field["widget"]
+            val = st.session_state.get(k, "")
+            opts = field.get("opts", None)
+            if widget == "text_input":
+                st.session_state[k] = cols[idx % 2].text_input(label, value=val, key=k)
+            elif widget == "text_area":
+                st.session_state[k] = cols[idx % 2].text_area(label, value=val, key=k)
+            elif widget == "number_input":
+                # Number fields default to 0.0 if empty, float for generality
+                st.session_state[k] = cols[idx % 2].number_input(label, value=float(val) if val not in ("", None) else 0.0, key=k)
+            elif widget == "selectbox":
+                st.session_state[k] = cols[idx % 2].selectbox(label, opts, index=opts.index(val) if val in opts else 0, key=k)
+            elif widget == "multiselect":
+                st.session_state[k] = cols[idx % 2].multiselect(label, opts, default=val if isinstance(val, list) else [], key=k)
+            elif widget == "checkbox":
+                st.session_state[k] = cols[idx % 2].checkbox(label, value=bool(val), key=k)
+        st.markdown("---")
 
-display_fields_editable()  # User kann Rohtext anpassen
-apply_edited_raw()  # Felder neu befüllen
-LOGO_PATH = "images/sthree.png"
-BACKGROUND_PATH = "images/AdobeStock_506577005.jpeg"
+# --- Sidebar: Vacancy Data Preview ---
+with st.sidebar:
+    st.header("📝 Current Vacancy Data (Preview)")
+    for step in WizardStep:
+        fields_by_group = get_fields_by_group(step)
+        # Only show step if any values are present
+        step_has_values = any(st.session_state.get(f["key"], None) for f in [f for g in fields_by_group.values() for f in g])
+        if not step_has_values:
+            continue
+        with st.expander(f"{step.value.replace('_', ' ').title()}"):
+            for group, fields in fields_by_group.items():
+                group_has_values = any(st.session_state.get(f["key"], None) for f in fields)
+                if not group_has_values:
+                    continue
+                st.markdown(f"**{group}**")
+                cols = st.columns(2)
+                for idx, field in enumerate(fields):
+                    val = st.session_state.get(field["key"], None)
+                    if val:
+                        display_val = (
+                            ", ".join(val) if isinstance(val, (list, tuple)) else str(val)
+                        )
+                        cols[idx % 2].markdown(
+                            f"<span style='font-size:0.95em'><b>{field['label']}:</b> {display_val}</span>",
+                            unsafe_allow_html=True
+                        )
+    st.markdown("---")
+    st.info("Fill in the wizard first, then use Vacalyser AI tools!")
 
+st.success("When finished, switch to the Vacalyser Tools panel to generate Job Ads, Boolean Strings, Personas and more!")
 
-st.image(LOGO_PATH, width=200)
-
-# Reset widget key tracking each run to avoid stale keys
-st.session_state["_used_widget_keys"] = set()
-
-# --- Global language toggle ------------------------------------------------
-if "lang" not in st.session_state:
-    st.session_state["lang"] = "de"
-
-col_space, col_toggle = st.columns([10, 1])
-with col_toggle:
-    toggle = st.toggle("English", value=st.session_state["lang"] == "en")
-st.session_state["lang"] = "en" if toggle else "de"
-lang = st.session_state["lang"]
-
-st.markdown(
-    f"""
-    <style>
-        .main {{
-            background: linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url('{BACKGROUND_PATH}');
-            background-size: cover;
-            background-attachment: fixed;
-        }}
-        input, textarea {{border: 2px solid #5b031c !important;}}
-        .stProgress > div > div > div > div {{background-color: #5b031c;}}
-        h1, h2, h3 {{color: #5b031c;}}
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-
-# Initialisiere job_fields, falls noch nicht vorhanden
-if "job_fields" not in st.session_state:
-    st.session_state["job_fields"] = {}
-
-# --- Wizard-Step Navigation ----------------------------------------------
-wizard_steps = [
-    ("Basisinformationen / Basic Data", wizard_step_1_basic),
-    ("Unternehmen / Company Info", wizard_step_2_company),
-    ("Abteilung / Department", wizard_step_3_department),
-    ("Rolle / Role", wizard_step_4_role),
-    ("Aufgaben / Tasks", wizard_step_5_tasks),
-    ("Skills / Kompetenzen", wizard_step_6_skills),
-    ("Vergütung / Compensation", wizard_step_7_compensation),
-    ("Recruiting-Prozess / Recruitment", wizard_step_8_recruitment),
-    ("Sprache & Veröffentlichung", wizard_step_9_publication),
-]
-
-if "step_idx" not in st.session_state:
-    st.session_state["step_idx"] = 0
-
-step_idx = st.session_state["step_idx"]
-st.progress((step_idx + 1) / len(wizard_steps))
-
-# --- Wizard-Ansicht -------------------------------------------------------
-st.title("Recruitment Need Analysis Wizard")
-st.info(
-    tr(
-        "Alle extrahierten Daten werden bei jedem Schritt als Standardwert vorgeschlagen. / All extracted data will be pre-filled in each step.",
-        lang,
-    )
-)
-
-wizard_steps[step_idx][1]()
-
-col_prev, col_next = st.columns(2)
-back_clicked = col_prev.button(tr("Zur\u00fcck / Back", lang), disabled=step_idx == 0)
-next_clicked = col_next.button(
-    tr("Weiter / Next", lang), disabled=step_idx == len(wizard_steps) - 1
-)
-
-if back_clicked:
-    st.session_state["step_idx"] = max(0, step_idx - 1)
-    st.rerun()
-if next_clicked:
-    st.session_state["step_idx"] = min(len(wizard_steps) - 1, step_idx + 1)
-    st.rerun()
-
-# --- Utility-Optionen nach dem Wizard ------------------------------------
-st.markdown("---")
-with st.expander(tr("Extras & Export", lang), expanded=False):
-    col1, col2 = st.columns(2)
-    with col1:
-        st.subheader(tr("1. Editierbare Felder / Editable Fields", lang))
-        display_fields_editable()
-    with col2:
-        st.subheader(tr("3. Mehrzeilige Ansicht (Copy & Paste)", lang))
-        display_all_fields_multiline_copy()
-
-if st.checkbox(tr("Session State anzeigen / Show Session State [DEV]", lang)):
-    st.write(st.session_state)
+st.caption("Vacalyser · Vacancy Wizard · powered by Streamlit")
