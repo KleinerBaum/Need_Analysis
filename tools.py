@@ -1,6 +1,10 @@
 import streamlit as st
 import openai
 from field_map import FIELD_MAP
+import re
+import requests
+import docx
+from PyPDF2 import PdfReader
 
 def collect_fields(keys=None):
     if keys is None:
@@ -134,3 +138,86 @@ Write a Markdown vacancy profile for documentation or sharing, using all availab
         )
         md = response.choices[0].message.content.strip()
         st.download_button("Download Markdown", md, file_name="vacancy_profile.md")
+
+# extractors
+
+
+# ---------- PDF & DOCX TEXT EXTRACTORS ----------
+def extract_text_from_pdf(uploaded_file):
+    reader = PdfReader(uploaded_file)
+    return "\n".join(page.extract_text() for page in reader.pages if page.extract_text())
+
+def extract_text_from_docx(uploaded_file):
+    doc = docx.Document(uploaded_file)
+    return "\n".join(para.text for para in doc.paragraphs)
+
+def extract_text_from_url(url):
+    r = requests.get(url)
+    return r.text  # For advanced use, use readability-lxml to grab only article body.
+
+# ---------- REGEX PATTERNS ----------
+# Tweak/add per field and target language/format
+REGEX_PATTERNS = {
+    "job_title":  r"(?:Job\s*Title|Position)\s*:?\s*(?P<job_title>[^\n,]+)",
+    "company_name": r"(?:Company|Employer)\s*:?\s*(?P<company_name>[^\n,]+)",
+    "work_location_city": r"(?:Location|Work City|Ort)\s*:?\s*(?P<work_location_city>[^\n,]+)",
+    "employment_type": r"(?:Employment Type|Vertragsart)\s*:?\s*(?P<employment_type>Permanent|Fixed-term|Internship|Freelance|Working Student)",
+    "seniority_level": r"(?:Seniority Level|Karrierelevel)\s*:?\s*(?P<seniority_level>Intern|Junior|Mid|Senior|Lead|Head|Director)",
+    "salary_range_min": r"(?:Salary|Gehalt|Vergütung)[^\d]*(?P<salary_range_min>\d{4,6})\s*(?:-|to|–)\s*\d{4,6}",
+    "salary_range_max": r"(?:Salary|Gehalt|Vergütung)[^\d]*\d{4,6}\s*(?:-|to|–)\s*(?P<salary_range_max>\d{4,6})",
+    "languages_required": r"(?:Languages Required|Sprachen)[^\n:]*:\s*(?P<languages_required>.+)",
+    "application_deadline": r"(?:Application Deadline|Bewerbungsfrist)[^\n:]*:\s*(?P<application_deadline>[^\n,]+)",
+    # Add more per FIELD_MAP!
+}
+
+def extract_with_regex(text):
+    result = {}
+    for key, pattern in REGEX_PATTERNS.items():
+        m = re.search(pattern, text, re.IGNORECASE)
+        if m and m.group(key):
+            val = m.group(key).strip()
+            if key == "languages_required":
+                val = [lang.strip() for lang in re.split(",|/|und|and", val)]
+            result[key] = val
+    return result
+
+# ---------- AI Fallback ----------
+def ai_extract_fields(text, field_map):
+    # Prepare extraction schema for GPT
+    fields = "\n".join(f"- {f['label']} ({f['key']})" for f in field_map)
+    prompt = f"""Extract the following fields from this job ad (if not present, leave empty):
+{fields}
+
+Return a valid JSON object with each key. 
+Job Ad:
+{text}
+"""
+    response = openai.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0
+    )
+    import json
+    raw = response.choices[0].message.content.strip()
+    # Remove code block if needed
+    if raw.startswith("```"):
+        raw = raw.strip("```").strip("json").strip()
+    try:
+        return json.loads(raw)
+    except Exception:
+        return {}
+
+def extract_all_fields(text, field_map):
+    regex_data = extract_with_regex(text)
+    # Only extract via AI for missing/ambiguous fields
+    missing_keys = [f["key"] for f in field_map if f["key"] not in regex_data]
+    if missing_keys:
+        ai_data = ai_extract_fields(text, [f for f in field_map if f["key"] in missing_keys])
+        regex_data.update(ai_data)
+    return regex_data
+
+# ----------- PRO-TIPS -----------
+# - Regex is best for highly structured data (headline: Job Title, etc.).
+# - Always sanitize PDF/DOCX/HTML to pure text before extraction.
+# - Provide clear mapping in prompt for GPT.
+# - Present the extraction results for user correction (no blind autofill!).
