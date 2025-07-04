@@ -1,5 +1,16 @@
 # utils/field_map.py
+from enum import Enum
 
+class WizardStep(Enum):
+    BASIC_DATA = 1
+    COMPANY_INFO = 2
+    DEPARTMENT_TEAM_INFO = 3
+    ROLE_DEFINITION = 4
+    TASKS_RESPONSIBILITIES = 5
+    SKILLS_COMPETENCIES = 6
+    COMPENSATION_BENEFITS = 7
+    RECRUITMENT_PROCESS = 8
+    LANGUAGE_PUBLICATION = 9
 # Unified field definitions for Vacalyser wizard
 field_map = {
     # Step 1: Basic Data
