@@ -7,7 +7,7 @@ st.info("Fill in each section below. Data is saved for all toolkit tools.")
 
 # --- Wizard Main Steps ---
 for step in WizardStep:
-    with st.expander(f"{step.value.replace('_', ' ').title()}", expanded=(step == list(WizardStep)[0])):
+    with st.expander(f"{step.name.replace('_', ' ').title()}", expanded=(step == list(WizardStep)[0])):
         fields = get_fields_for_step(step)
         cols = st.columns(2)
         for idx, field in enumerate(fields):
