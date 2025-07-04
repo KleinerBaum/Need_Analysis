@@ -463,4 +463,8 @@ def get_fields_for_step(step: WizardStep):
 def get_fields():
     return list(field_map.keys())
 
-def get
+def get_fields_by_group(step: WizardStep, prio_max: int = None):
+    fields = {name: meta for name, meta in field_map.items() if meta["step"] == step}
+    if prio_max is not None:
+        fields = {name: meta for name, meta in fields.items() if meta.get("prio", prio_max) <= prio_max}
+    return fields
