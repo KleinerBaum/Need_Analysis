@@ -459,6 +459,24 @@ field_map = {
     }
 }
 
+
+def get_fields_by_group(step: WizardStep, prio_max: int = None):
+    """
+    Gruppiert die Felder eines WizardSteps (optional gefiltert nach Priorität).
+
+    Hinweis: Aktuell ist keine Priorität im field_map definiert.
+    Falls du Prioritäten nutzt, ergänze das Attribut 'prio' in field_map.
+    """
+    fields = {name: meta for name, meta in field_map.items() if meta["step"] == step}
+
+    if prio_max is not None:
+        fields = {
+            name: meta for name, meta in fields.items()
+            if meta.get("prio", prio_max) <= prio_max
+        }
+
+    return fields
+    
 # Helper: get all fields for a given step
 def get_fields_for_step(step_number: int):
     return [name for name, meta in field_map.items() if meta["step"] == step_number]
