@@ -1,29 +1,29 @@
-# utils/field_map.py
 from enum import Enum
 
 class WizardStep(Enum):
-    BASIC_DATA = 1
-    COMPANY_INFO = 2
-    DEPARTMENT_TEAM_INFO = 3
-    ROLE_DEFINITION = 4
-    TASKS_RESPONSIBILITIES = 5
-    SKILLS_COMPETENCIES = 6
-    COMPENSATION_BENEFITS = 7
-    RECRUITMENT_PROCESS = 8
-    LANGUAGE_PUBLICATION = 9
-# Unified field definitions for Vacalyser wizard
+    BASIC = "BASIC"
+    COMPANY = "COMPANY"
+    DEPARTMENT = "DEPARTMENT"
+    TASKS = "TASKS"
+    SKILLS = "SKILLS"
+    BENEFITS = "BENEFITS"
+    COMP_PACKAGE = "COMP_PACKAGE"
+    TARGET_GROUP = "TARGET_GROUP"
+    INTERVIEW = "INTERVIEW"
+    SUMMARY = "SUMMARY"
+
 field_map = {
     # Step 1: Basic Data
     "job_title": {
-        "step": 1,
+        "step": WizardStep.BASIC,
         "widget": "text_input",
         "label": "Stellentitel / Job Title",
         "help": "Official role title for the position.",
         "required": True,
-        "source": "extracted"  # Often auto-detected from JD text
+        "source": "extracted"
     },
     "input_url": {
-        "step": 1,
+        "step": WizardStep.BASIC,
         "widget": "text_input",
         "label": "JD-URL / Job Description URL",
         "help": "Optional URL of an online job description to import.",
@@ -31,18 +31,17 @@ field_map = {
         "source": "user"
     },
     "uploaded_file": {
-        "step": 1,
+        "step": WizardStep.BASIC,
         "widget": "file_uploader",
         "label": "Stellenbeschreibung hochladen / Upload Job Description",
         "help": "Upload a PDF or DOCX of the job description for AI extraction.",
         "required": False,
         "source": "user"
     },
-    # (parsed_data_raw is internal storage for extracted text; not an input field)
 
     # Step 2: Company Info
     "company_name": {
-        "step": 2,
+        "step": WizardStep.COMPANY,
         "widget": "text_input",
         "label": "Unternehmensname / Company Name",
         "help": "Name of the hiring company/organization.",
@@ -50,7 +49,7 @@ field_map = {
         "source": "extracted"
     },
     "city": {
-        "step": 2,
+        "step": WizardStep.COMPANY,
         "widget": "text_input",
         "label": "Standort (Stadt) / Job Location (City)",
         "help": "Primary city or location for the job (leave blank if remote).",
@@ -58,7 +57,7 @@ field_map = {
         "source": "extracted"
     },
     "headquarters_location": {
-        "step": 2,
+        "step": WizardStep.COMPANY,
         "widget": "text_input",
         "label": "Hauptsitz / Headquarters Location",
         "help": "Company headquarters (if different from job location).",
@@ -66,7 +65,7 @@ field_map = {
         "source": "extracted"
     },
     "company_website": {
-        "step": 2,
+        "step": WizardStep.COMPANY,
         "widget": "text_input",
         "label": "Webseite / Company Website",
         "help": "Official website of the company (for reference or display).",
@@ -76,7 +75,7 @@ field_map = {
 
     # Step 3: Department and Team Info
     "brand_name": {
-        "step": 3,
+        "step": WizardStep.DEPARTMENT,
         "widget": "text_input",
         "label": "Marke/Abteilung / Brand or Department",
         "help": "Specific brand, division, or department (if applicable).",
@@ -84,17 +83,33 @@ field_map = {
         "source": "user"
     },
     "team_structure": {
-        "step": 3,
+        "step": WizardStep.DEPARTMENT,
         "widget": "text_area",
         "label": "Team & Struktur / Team Structure",
         "help": "Brief description of the team and its structure (who the role reports to, team size, etc.).",
         "required": False,
         "source": "user"
     },
+    "reports_to": {
+        "step": WizardStep.DEPARTMENT,
+        "widget": "text_input",
+        "label": "Berichtet an / Reports To",
+        "help": "The position or person this role reports to (e.g. Manager or Team Lead).",
+        "required": False,
+        "source": "user"
+    },
+    "supervises": {
+        "step": WizardStep.DEPARTMENT,
+        "widget": "text_input",
+        "label": "Führt Aufsicht über / Supervises",
+        "help": "If a managerial role, list positions or team this role oversees.",
+        "required": False,
+        "source": "user"
+    },
 
     # Step 4: Role Definition
     "date_of_employment_start": {
-        "step": 4,
+        "step": WizardStep.BASIC,
         "widget": "date_input",
         "label": "Startdatum / Start Date",
         "help": "Planned start date of employment.",
@@ -102,7 +117,7 @@ field_map = {
         "source": "extracted"
     },
     "job_type": {
-        "step": 4,
+        "step": WizardStep.BASIC,
         "widget": "selectbox",
         "label": "Beschäftigungsart / Employment Type",
         "options": ["Vollzeit (Full-time)", "Teilzeit (Part-time)", "Freelance", "Werkstudent (Working Student)"],
@@ -111,7 +126,7 @@ field_map = {
         "source": "extracted"
     },
     "contract_type": {
-        "step": 4,
+        "step": WizardStep.BENEFITS,
         "widget": "selectbox",
         "label": "Vertragsart / Contract Type",
         "options": ["Unbefristet (Permanent)", "Befristet (Temporary)", "Praktikum (Internship)", "Freier Mitarbeiter (Contract)"],
@@ -120,7 +135,7 @@ field_map = {
         "source": "extracted"
     },
     "job_level": {
-        "step": 4,
+        "step": WizardStep.BASIC,
         "widget": "selectbox",
         "label": "Karrierestufe / Seniority Level",
         "options": ["Einsteiger (Entry)", "Junior", "Mid-Level", "Senior", "Lead", "Direktor (Director)"],
@@ -129,15 +144,15 @@ field_map = {
         "source": "extracted"
     },
     "role_description": {
-        "step": 4,
+        "step": WizardStep.BASIC,
         "widget": "text_area",
         "label": "Rollenbeschreibung / Role Description",
         "help": "Overview paragraph describing the role's purpose and impact.",
         "required": True,
-        "source": "llm"  # Can be AI-generated summary of the role
+        "source": "llm"
     },
     "role_type": {
-        "step": 4,
+        "step": WizardStep.BASIC,
         "widget": "multiselect",
         "label": "Rollentyp / Role Type",
         "options": ["Technisch (Technical)", "Führungsposition (Managerial)", "Administrativ (Administrative)"],
@@ -145,27 +160,10 @@ field_map = {
         "required": True,
         "source": "extracted"
     },
-    "reports_to": {
-        "step": 4,
-        "widget": "text_input",
-        "label": "Berichtet an / Reports To",
-        "help": "The position or person this role reports to (e.g. Manager or Team Lead).",
-        "required": False,
-        "source": "user"
-    },
-    "supervises": {
-        "step": 4,
-        "widget": "text_input",
-        "label": "Führt Aufsicht über / Supervises",
-        "help": "If a managerial role, list positions or team this role oversees.",
-        "required": False,
-        "source": "user"
-    },
-    # (Additional optional fields like performance metrics, priority projects, travel_requirements, etc. can be included here as needed.)
 
     # Step 5: Tasks & Responsibilities
     "task_list": {
-        "step": 5,
+        "step": WizardStep.TASKS,
         "widget": "text_area",
         "label": "Aufgaben / Task List",
         "help": "List of main tasks and responsibilities (bullet points).",
@@ -173,7 +171,7 @@ field_map = {
         "source": "extracted"
     },
     "key_responsibilities": {
-        "step": 5,
+        "step": WizardStep.TASKS,
         "widget": "text_area",
         "label": "Kernverantwortungen / Key Responsibilities",
         "help": "Key high-level responsibilities (if not evident from task list).",
@@ -181,7 +179,7 @@ field_map = {
         "source": "user"
     },
     "technical_tasks": {
-        "step": 5,
+        "step": WizardStep.TASKS,
         "widget": "text_area",
         "label": "Technische Aufgaben / Technical Tasks",
         "help": "Specific technical duties (if applicable to the role).",
@@ -189,7 +187,7 @@ field_map = {
         "source": "user"
     },
     "managerial_tasks": {
-        "step": 5,
+        "step": WizardStep.TASKS,
         "widget": "text_area",
         "label": "Leitungsaufgaben / Managerial Tasks",
         "help": "Managerial or leadership duties (for managerial roles).",
@@ -197,7 +195,7 @@ field_map = {
         "source": "user"
     },
     "administrative_tasks": {
-        "step": 5,
+        "step": WizardStep.TASKS,
         "widget": "text_area",
         "label": "Administrative Aufgaben / Administrative Tasks",
         "help": "Administrative or support tasks (if applicable).",
@@ -207,7 +205,7 @@ field_map = {
 
     # Step 6: Skills & Competencies
     "must_have_skills": {
-        "step": 6,
+        "step": WizardStep.SKILLS,
         "widget": "text_area",
         "label": "Erforderliche Fähigkeiten / Must-have Skills",
         "help": "Essential skills and qualifications candidates must possess.",
@@ -215,7 +213,7 @@ field_map = {
         "source": "extracted"
     },
     "hard_skills": {
-        "step": 6,
+        "step": WizardStep.SKILLS,
         "widget": "text_area",
         "label": "Fachliche Skills / Hard Skills",
         "help": "Technical or domain-specific skills required.",
@@ -223,7 +221,7 @@ field_map = {
         "source": "user"
     },
     "soft_skills": {
-        "step": 6,
+        "step": WizardStep.SKILLS,
         "widget": "text_area",
         "label": "Soft Skills",
         "help": "Soft skills or personal competencies needed (communication, teamwork, etc.).",
@@ -231,7 +229,7 @@ field_map = {
         "source": "user"
     },
     "nice_to_have_skills": {
-        "step": 6,
+        "step": WizardStep.SKILLS,
         "widget": "text_area",
         "label": "Pluspunkte / Nice-to-have Skills",
         "help": "Additional skills or experience that are beneficial but not mandatory.",
@@ -239,7 +237,7 @@ field_map = {
         "source": "user"
     },
     "certifications_required": {
-        "step": 6,
+        "step": WizardStep.SKILLS,
         "widget": "text_input",
         "label": "Zertifikate / Required Certifications",
         "help": "Professional certifications or licenses required (if any).",
@@ -247,7 +245,7 @@ field_map = {
         "source": "user"
     },
     "language_requirements": {
-        "step": 6,
+        "step": WizardStep.SKILLS,
         "widget": "text_input",
         "label": "Sprachkenntnisse / Language Requirements",
         "help": "Required language proficiencies for candidates (if any).",
@@ -255,7 +253,7 @@ field_map = {
         "source": "user"
     },
     "tool_proficiency": {
-        "step": 6,
+        "step": WizardStep.SKILLS,
         "widget": "text_input",
         "label": "Toolkenntnisse / Tool Proficiency",
         "help": "Software or tool proficiencies needed (e.g. Excel, SAP, programming languages).",
@@ -263,7 +261,7 @@ field_map = {
         "source": "user"
     },
     "technical_stack": {
-        "step": 6,
+        "step": WizardStep.SKILLS,
         "widget": "text_input",
         "label": "Tech-Stack / Technical Stack",
         "help": "Technologies and frameworks used (for tech roles, e.g. AWS, React, etc.).",
@@ -273,7 +271,7 @@ field_map = {
 
     # Step 7: Compensation & Benefits
     "salary_range": {
-        "step": 7,
+        "step": WizardStep.BENEFITS,
         "widget": "text_input",
         "label": "Gehaltsspanne / Salary Range",
         "help": "Expected salary range for the position (e.g. 50-60k).",
@@ -281,7 +279,7 @@ field_map = {
         "source": "user"
     },
     "currency": {
-        "step": 7,
+        "step": WizardStep.BENEFITS,
         "widget": "selectbox",
         "label": "Währung / Currency",
         "options": ["EUR", "USD", "GBP", "CHF", "Other"],
@@ -290,7 +288,7 @@ field_map = {
         "source": "user"
     },
     "pay_frequency": {
-        "step": 7,
+        "step": WizardStep.BENEFITS,
         "widget": "selectbox",
         "label": "Zahlungsfrequenz / Pay Frequency",
         "options": ["Jährlich (Yearly)", "Monatlich (Monthly)", "Stündlich (Hourly)"],
@@ -299,7 +297,7 @@ field_map = {
         "source": "user"
     },
     "bonus_scheme": {
-        "step": 7,
+        "step": WizardStep.BENEFITS,
         "widget": "text_input",
         "label": "Bonusregelung / Bonus Scheme",
         "help": "Description of any bonus or incentive scheme (if applicable).",
@@ -307,7 +305,7 @@ field_map = {
         "source": "user"
     },
     "commission_structure": {
-        "step": 7,
+        "step": WizardStep.BENEFITS,
         "widget": "text_input",
         "label": "Provision / Commission Structure",
         "help": "Details of commission (for sales roles, if applicable).",
@@ -315,7 +313,7 @@ field_map = {
         "source": "user"
     },
     "vacation_days": {
-        "step": 7,
+        "step": WizardStep.BENEFITS,
         "widget": "number_input",
         "label": "Urlaubstage / Vacation Days",
         "help": "Number of annual vacation days offered.",
@@ -323,7 +321,7 @@ field_map = {
         "source": "user"
     },
     "remote_work_policy": {
-        "step": 7,
+        "step": WizardStep.BENEFITS,
         "widget": "selectbox",
         "label": "Home-Office Möglichkeit / Remote Work",
         "options": ["Keine / None", "Teilweise remote / Hybrid", "Vollständig remote / Fully Remote"],
@@ -332,7 +330,7 @@ field_map = {
         "source": "user"
     },
     "flexible_hours": {
-        "step": 7,
+        "step": WizardStep.BENEFITS,
         "widget": "checkbox",
         "label": "Gleitzeit / Flexible Hours",
         "help": "Check if flexible working hours are offered.",
@@ -340,7 +338,7 @@ field_map = {
         "source": "user"
     },
     "relocation_assistance": {
-        "step": 7,
+        "step": WizardStep.BENEFITS,
         "widget": "checkbox",
         "label": "Umzugsunterstützung / Relocation Assistance",
         "help": "Check if relocation support is provided for candidates.",
@@ -348,7 +346,7 @@ field_map = {
         "source": "user"
     },
     "childcare_support": {
-        "step": 7,
+        "step": WizardStep.BENEFITS,
         "widget": "checkbox",
         "label": "Kinderbetreuung / Childcare Support",
         "help": "Check if childcare or family support benefits are offered.",
@@ -358,7 +356,7 @@ field_map = {
 
     # Step 8: Recruitment Process
     "recruitment_contact_email": {
-        "step": 8,
+        "step": WizardStep.INTERVIEW,
         "widget": "text_input",
         "label": "Kontakt E-Mail / Contact Email",
         "help": "Email address for applications or inquiries.",
@@ -366,7 +364,7 @@ field_map = {
         "source": "user"
     },
     "recruitment_steps": {
-        "step": 8,
+        "step": WizardStep.INTERVIEW,
         "widget": "text_area",
         "label": "Bewerbungsprozess / Recruitment Steps",
         "help": "Outline of the recruitment process (interviews, tests, etc.).",
@@ -374,7 +372,7 @@ field_map = {
         "source": "user"
     },
     "recruitment_timeline": {
-        "step": 8,
+        "step": WizardStep.INTERVIEW,
         "widget": "text_input",
         "label": "Einstellungszeitplan / Timeline",
         "help": "Estimated timeline for the hiring process (e.g. 4 weeks).",
@@ -382,7 +380,7 @@ field_map = {
         "source": "user"
     },
     "number_of_interviews": {
-        "step": 8,
+        "step": WizardStep.INTERVIEW,
         "widget": "number_input",
         "label": "Anzahl Interviews / Number of Interviews",
         "help": "How many interview rounds are planned (if known).",
@@ -390,7 +388,7 @@ field_map = {
         "source": "user"
     },
     "interview_format": {
-        "step": 8,
+        "step": WizardStep.INTERVIEW,
         "widget": "text_input",
         "label": "Interviewformat / Interview Format",
         "help": "Format of interviews (phone, video, on-site, etc.).",
@@ -398,7 +396,7 @@ field_map = {
         "source": "user"
     },
     "assessment_tests": {
-        "step": 8,
+        "step": WizardStep.INTERVIEW,
         "widget": "text_input",
         "label": "Tests / Assessment Tests",
         "help": "Any assessment or coding tests involved in hiring.",
@@ -406,7 +404,7 @@ field_map = {
         "source": "user"
     },
     "onboarding_process_overview": {
-        "step": 8,
+        "step": WizardStep.INTERVIEW,
         "widget": "text_area",
         "label": "Onboarding / Onboarding Process",
         "help": "Brief overview of the onboarding process for the new hire.",
@@ -414,7 +412,7 @@ field_map = {
         "source": "user"
     },
     "recruitment_contact_phone": {
-        "step": 8,
+        "step": WizardStep.INTERVIEW,
         "widget": "text_input",
         "label": "Kontakt Telefon / Contact Phone",
         "help": "Contact phone number for queries (optional).",
@@ -422,7 +420,7 @@ field_map = {
         "source": "user"
     },
     "application_instructions": {
-        "step": 8,
+        "step": WizardStep.INTERVIEW,
         "widget": "text_area",
         "label": "Bewerbungshinweise / Application Instructions",
         "help": "Specific instructions on how to apply (e.g. apply via company portal).",
@@ -432,7 +430,7 @@ field_map = {
 
     # Step 9: Language & Publication
     "language_of_ad": {
-        "step": 9,
+        "step": WizardStep.SUMMARY,
         "widget": "selectbox",
         "label": "Anzeigesprache / Advertisement Language",
         "options": ["Deutsch", "English"],
@@ -441,7 +439,7 @@ field_map = {
         "source": "user"
     },
     "translation_required": {
-        "step": 9,
+        "step": WizardStep.SUMMARY,
         "widget": "checkbox",
         "label": "Übersetzung benötigt? / Translation needed?",
         "help": "Check if the job ad needs to be translated to another language.",
@@ -449,7 +447,7 @@ field_map = {
         "source": "user"
     },
     "desired_publication_channels": {
-        "step": 9,
+        "step": WizardStep.SUMMARY,
         "widget": "multiselect",
         "label": "Veröffentlichungskanäle / Publication Channels",
         "options": ["LinkedIn", "Indeed", "Company Website", "Internal Portal", "Others"],
@@ -465,13 +463,4 @@ def get_fields_for_step(step: WizardStep):
 def get_fields():
     return list(field_map.keys())
 
-def get_fields_by_group(step: WizardStep, prio_max: int = None):
-    fields = {name: meta for name, meta in field_map.items() if meta["step"] == step}
-
-    if prio_max is not None:
-        fields = {
-            name: meta for name, meta in fields.items()
-            if meta.get("prio", prio_max) <= prio_max
-        }
-
-    return fields
+def get
