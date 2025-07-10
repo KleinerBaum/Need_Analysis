@@ -99,6 +99,9 @@ STEP_KEYS: dict[int, list[str]] = {
         "translation_required",  # ◆
         "desired_publication_channels",  # ⬚
     ],
+    10: [  # Step 10: Summary
+        "expected_annual_salary",  # ⬚
+    ],
 }
 
 # Fields generated or used internally (not shown in UI steps)

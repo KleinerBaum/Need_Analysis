@@ -1,4 +1,6 @@
 from enum import Enum
+from typing import Any, Dict, Optional, cast
+
 
 class WizardStep(Enum):
     BASIC = "BASIC"
@@ -12,6 +14,7 @@ class WizardStep(Enum):
     INTERVIEW = "INTERVIEW"
     SUMMARY = "SUMMARY"
 
+
 field_map = {
     # Step 1: Basic Data
     "job_title": {
@@ -20,7 +23,7 @@ field_map = {
         "label": "Stellentitel / Job Title",
         "help": "Official role title for the position.",
         "required": True,
-        "source": "extracted"
+        "source": "extracted",
     },
     "input_url": {
         "step": WizardStep.BASIC,
@@ -28,7 +31,7 @@ field_map = {
         "label": "JD-URL / Job Description URL",
         "help": "Optional URL of an online job description to import.",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "uploaded_file": {
         "step": WizardStep.BASIC,
@@ -36,9 +39,8 @@ field_map = {
         "label": "Stellenbeschreibung hochladen / Upload Job Description",
         "help": "Upload a PDF or DOCX of the job description for AI extraction.",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
-
     # Step 2: Company Info
     "company_name": {
         "step": WizardStep.COMPANY,
@@ -46,7 +48,7 @@ field_map = {
         "label": "Unternehmensname / Company Name",
         "help": "Name of the hiring company/organization.",
         "required": True,
-        "source": "extracted"
+        "source": "extracted",
     },
     "city": {
         "step": WizardStep.COMPANY,
@@ -54,7 +56,7 @@ field_map = {
         "label": "Standort (Stadt) / Job Location (City)",
         "help": "Primary city or location for the job (leave blank if remote).",
         "required": True,
-        "source": "extracted"
+        "source": "extracted",
     },
     "headquarters_location": {
         "step": WizardStep.COMPANY,
@@ -62,7 +64,7 @@ field_map = {
         "label": "Hauptsitz / Headquarters Location",
         "help": "Company headquarters (if different from job location).",
         "required": False,
-        "source": "extracted"
+        "source": "extracted",
     },
     "company_website": {
         "step": WizardStep.COMPANY,
@@ -70,9 +72,8 @@ field_map = {
         "label": "Webseite / Company Website",
         "help": "Official website of the company (for reference or display).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
-
     # Step 3: Department and Team Info
     "brand_name": {
         "step": WizardStep.DEPARTMENT,
@@ -80,7 +81,7 @@ field_map = {
         "label": "Marke/Abteilung / Brand or Department",
         "help": "Specific brand, division, or department (if applicable).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "team_structure": {
         "step": WizardStep.DEPARTMENT,
@@ -88,7 +89,7 @@ field_map = {
         "label": "Team & Struktur / Team Structure",
         "help": "Brief description of the team and its structure (who the role reports to, team size, etc.).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "reports_to": {
         "step": WizardStep.DEPARTMENT,
@@ -96,7 +97,7 @@ field_map = {
         "label": "Berichtet an / Reports To",
         "help": "The position or person this role reports to (e.g. Manager or Team Lead).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "supervises": {
         "step": WizardStep.DEPARTMENT,
@@ -104,9 +105,8 @@ field_map = {
         "label": "Führt Aufsicht über / Supervises",
         "help": "If a managerial role, list positions or team this role oversees.",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
-
     # Step 4: Role Definition
     "date_of_employment_start": {
         "step": WizardStep.BASIC,
@@ -114,34 +114,51 @@ field_map = {
         "label": "Startdatum / Start Date",
         "help": "Planned start date of employment.",
         "required": False,
-        "source": "extracted"
+        "source": "extracted",
     },
     "job_type": {
         "step": WizardStep.BASIC,
         "widget": "selectbox",
         "label": "Beschäftigungsart / Employment Type",
-        "options": ["Vollzeit (Full-time)", "Teilzeit (Part-time)", "Freelance", "Werkstudent (Working Student)"],
+        "options": [
+            "Vollzeit (Full-time)",
+            "Teilzeit (Part-time)",
+            "Freelance",
+            "Werkstudent (Working Student)",
+        ],
         "help": "Type of employment in terms of hours or commitment.",
         "required": True,
-        "source": "extracted"
+        "source": "extracted",
     },
     "contract_type": {
         "step": WizardStep.BENEFITS,
         "widget": "selectbox",
         "label": "Vertragsart / Contract Type",
-        "options": ["Unbefristet (Permanent)", "Befristet (Temporary)", "Praktikum (Internship)", "Freier Mitarbeiter (Contract)"],
+        "options": [
+            "Unbefristet (Permanent)",
+            "Befristet (Temporary)",
+            "Praktikum (Internship)",
+            "Freier Mitarbeiter (Contract)",
+        ],
         "help": "Type of contract for the role.",
         "required": True,
-        "source": "extracted"
+        "source": "extracted",
     },
     "job_level": {
         "step": WizardStep.BASIC,
         "widget": "selectbox",
         "label": "Karrierestufe / Seniority Level",
-        "options": ["Einsteiger (Entry)", "Junior", "Mid-Level", "Senior", "Lead", "Direktor (Director)"],
+        "options": [
+            "Einsteiger (Entry)",
+            "Junior",
+            "Mid-Level",
+            "Senior",
+            "Lead",
+            "Direktor (Director)",
+        ],
         "help": "Seniority or career level required for the role.",
         "required": True,
-        "source": "extracted"
+        "source": "extracted",
     },
     "role_description": {
         "step": WizardStep.BASIC,
@@ -149,18 +166,21 @@ field_map = {
         "label": "Rollenbeschreibung / Role Description",
         "help": "Overview paragraph describing the role's purpose and impact.",
         "required": True,
-        "source": "llm"
+        "source": "llm",
     },
     "role_type": {
         "step": WizardStep.BASIC,
         "widget": "multiselect",
         "label": "Rollentyp / Role Type",
-        "options": ["Technisch (Technical)", "Führungsposition (Managerial)", "Administrativ (Administrative)"],
+        "options": [
+            "Technisch (Technical)",
+            "Führungsposition (Managerial)",
+            "Administrativ (Administrative)",
+        ],
         "help": "Nature of the role (select one or multiple categories).",
         "required": True,
-        "source": "extracted"
+        "source": "extracted",
     },
-
     # Step 5: Tasks & Responsibilities
     "task_list": {
         "step": WizardStep.TASKS,
@@ -168,7 +188,7 @@ field_map = {
         "label": "Aufgaben / Task List",
         "help": "List of main tasks and responsibilities (bullet points).",
         "required": True,
-        "source": "extracted"
+        "source": "extracted",
     },
     "key_responsibilities": {
         "step": WizardStep.TASKS,
@@ -176,7 +196,7 @@ field_map = {
         "label": "Kernverantwortungen / Key Responsibilities",
         "help": "Key high-level responsibilities (if not evident from task list).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "technical_tasks": {
         "step": WizardStep.TASKS,
@@ -184,7 +204,7 @@ field_map = {
         "label": "Technische Aufgaben / Technical Tasks",
         "help": "Specific technical duties (if applicable to the role).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "managerial_tasks": {
         "step": WizardStep.TASKS,
@@ -192,7 +212,7 @@ field_map = {
         "label": "Leitungsaufgaben / Managerial Tasks",
         "help": "Managerial or leadership duties (for managerial roles).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "administrative_tasks": {
         "step": WizardStep.TASKS,
@@ -200,9 +220,8 @@ field_map = {
         "label": "Administrative Aufgaben / Administrative Tasks",
         "help": "Administrative or support tasks (if applicable).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
-
     # Step 6: Skills & Competencies
     "must_have_skills": {
         "step": WizardStep.SKILLS,
@@ -210,7 +229,7 @@ field_map = {
         "label": "Erforderliche Fähigkeiten / Must-have Skills",
         "help": "Essential skills and qualifications candidates must possess.",
         "required": True,
-        "source": "extracted"
+        "source": "extracted",
     },
     "hard_skills": {
         "step": WizardStep.SKILLS,
@@ -218,7 +237,7 @@ field_map = {
         "label": "Fachliche Skills / Hard Skills",
         "help": "Technical or domain-specific skills required.",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "soft_skills": {
         "step": WizardStep.SKILLS,
@@ -226,7 +245,7 @@ field_map = {
         "label": "Soft Skills",
         "help": "Soft skills or personal competencies needed (communication, teamwork, etc.).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "nice_to_have_skills": {
         "step": WizardStep.SKILLS,
@@ -234,7 +253,7 @@ field_map = {
         "label": "Pluspunkte / Nice-to-have Skills",
         "help": "Additional skills or experience that are beneficial but not mandatory.",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "certifications_required": {
         "step": WizardStep.SKILLS,
@@ -242,7 +261,7 @@ field_map = {
         "label": "Zertifikate / Required Certifications",
         "help": "Professional certifications or licenses required (if any).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "language_requirements": {
         "step": WizardStep.SKILLS,
@@ -250,7 +269,7 @@ field_map = {
         "label": "Sprachkenntnisse / Language Requirements",
         "help": "Required language proficiencies for candidates (if any).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "tool_proficiency": {
         "step": WizardStep.SKILLS,
@@ -258,7 +277,7 @@ field_map = {
         "label": "Toolkenntnisse / Tool Proficiency",
         "help": "Software or tool proficiencies needed (e.g. Excel, SAP, programming languages).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "technical_stack": {
         "step": WizardStep.SKILLS,
@@ -266,9 +285,8 @@ field_map = {
         "label": "Tech-Stack / Technical Stack",
         "help": "Technologies and frameworks used (for tech roles, e.g. AWS, React, etc.).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
-
     # Step 7: Compensation & Benefits
     "salary_range": {
         "step": WizardStep.BENEFITS,
@@ -276,7 +294,7 @@ field_map = {
         "label": "Gehaltsspanne / Salary Range",
         "help": "Expected salary range for the position (e.g. 50-60k).",
         "required": True,
-        "source": "user"
+        "source": "user",
     },
     "currency": {
         "step": WizardStep.BENEFITS,
@@ -285,7 +303,7 @@ field_map = {
         "options": ["EUR", "USD", "GBP", "CHF", "Other"],
         "help": "Currency of the salary (Euro, USD, etc.).",
         "required": True,
-        "source": "user"
+        "source": "user",
     },
     "pay_frequency": {
         "step": WizardStep.BENEFITS,
@@ -294,7 +312,7 @@ field_map = {
         "options": ["Jährlich (Yearly)", "Monatlich (Monthly)", "Stündlich (Hourly)"],
         "help": "Frequency of pay (annual salary, monthly, hourly rate, etc.).",
         "required": True,
-        "source": "user"
+        "source": "user",
     },
     "bonus_scheme": {
         "step": WizardStep.BENEFITS,
@@ -302,7 +320,7 @@ field_map = {
         "label": "Bonusregelung / Bonus Scheme",
         "help": "Description of any bonus or incentive scheme (if applicable).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "commission_structure": {
         "step": WizardStep.BENEFITS,
@@ -310,7 +328,7 @@ field_map = {
         "label": "Provision / Commission Structure",
         "help": "Details of commission (for sales roles, if applicable).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "vacation_days": {
         "step": WizardStep.BENEFITS,
@@ -318,16 +336,20 @@ field_map = {
         "label": "Urlaubstage / Vacation Days",
         "help": "Number of annual vacation days offered.",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "remote_work_policy": {
         "step": WizardStep.BENEFITS,
         "widget": "selectbox",
         "label": "Home-Office Möglichkeit / Remote Work",
-        "options": ["Keine / None", "Teilweise remote / Hybrid", "Vollständig remote / Fully Remote"],
+        "options": [
+            "Keine / None",
+            "Teilweise remote / Hybrid",
+            "Vollständig remote / Fully Remote",
+        ],
         "help": "Remote work options or policy (none, hybrid, or fully remote).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "flexible_hours": {
         "step": WizardStep.BENEFITS,
@@ -335,7 +357,7 @@ field_map = {
         "label": "Gleitzeit / Flexible Hours",
         "help": "Check if flexible working hours are offered.",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "relocation_assistance": {
         "step": WizardStep.BENEFITS,
@@ -343,7 +365,7 @@ field_map = {
         "label": "Umzugsunterstützung / Relocation Assistance",
         "help": "Check if relocation support is provided for candidates.",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "childcare_support": {
         "step": WizardStep.BENEFITS,
@@ -351,9 +373,8 @@ field_map = {
         "label": "Kinderbetreuung / Childcare Support",
         "help": "Check if childcare or family support benefits are offered.",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
-
     # Step 8: Recruitment Process
     "recruitment_contact_email": {
         "step": WizardStep.INTERVIEW,
@@ -361,7 +382,7 @@ field_map = {
         "label": "Kontakt E-Mail / Contact Email",
         "help": "Email address for applications or inquiries.",
         "required": True,
-        "source": "user"
+        "source": "user",
     },
     "recruitment_steps": {
         "step": WizardStep.INTERVIEW,
@@ -369,7 +390,7 @@ field_map = {
         "label": "Bewerbungsprozess / Recruitment Steps",
         "help": "Outline of the recruitment process (interviews, tests, etc.).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "recruitment_timeline": {
         "step": WizardStep.INTERVIEW,
@@ -377,7 +398,7 @@ field_map = {
         "label": "Einstellungszeitplan / Timeline",
         "help": "Estimated timeline for the hiring process (e.g. 4 weeks).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "number_of_interviews": {
         "step": WizardStep.INTERVIEW,
@@ -385,7 +406,7 @@ field_map = {
         "label": "Anzahl Interviews / Number of Interviews",
         "help": "How many interview rounds are planned (if known).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "interview_format": {
         "step": WizardStep.INTERVIEW,
@@ -393,7 +414,7 @@ field_map = {
         "label": "Interviewformat / Interview Format",
         "help": "Format of interviews (phone, video, on-site, etc.).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "assessment_tests": {
         "step": WizardStep.INTERVIEW,
@@ -401,7 +422,7 @@ field_map = {
         "label": "Tests / Assessment Tests",
         "help": "Any assessment or coding tests involved in hiring.",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "onboarding_process_overview": {
         "step": WizardStep.INTERVIEW,
@@ -409,7 +430,7 @@ field_map = {
         "label": "Onboarding / Onboarding Process",
         "help": "Brief overview of the onboarding process for the new hire.",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "recruitment_contact_phone": {
         "step": WizardStep.INTERVIEW,
@@ -417,7 +438,7 @@ field_map = {
         "label": "Kontakt Telefon / Contact Phone",
         "help": "Contact phone number for queries (optional).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "application_instructions": {
         "step": WizardStep.INTERVIEW,
@@ -425,9 +446,8 @@ field_map = {
         "label": "Bewerbungshinweise / Application Instructions",
         "help": "Specific instructions on how to apply (e.g. apply via company portal).",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
-
     # Step 9: Language & Publication
     "language_of_ad": {
         "step": WizardStep.SUMMARY,
@@ -436,7 +456,7 @@ field_map = {
         "options": ["Deutsch", "English"],
         "help": "Language of the job ad content to finalize.",
         "required": True,
-        "source": "user"
+        "source": "user",
     },
     "translation_required": {
         "step": WizardStep.SUMMARY,
@@ -444,27 +464,50 @@ field_map = {
         "label": "Übersetzung benötigt? / Translation needed?",
         "help": "Check if the job ad needs to be translated to another language.",
         "required": False,
-        "source": "user"
+        "source": "user",
     },
     "desired_publication_channels": {
         "step": WizardStep.SUMMARY,
         "widget": "multiselect",
         "label": "Veröffentlichungskanäle / Publication Channels",
-        "options": ["LinkedIn", "Indeed", "Company Website", "Internal Portal", "Others"],
+        "options": [
+            "LinkedIn",
+            "Indeed",
+            "Company Website",
+            "Internal Portal",
+            "Others",
+        ],
         "help": "Where the job ad will be published (for planning purposes).",
         "required": False,
-        "source": "user"
-    }
+        "source": "user",
+    },
+    "expected_annual_salary": {
+        "step": WizardStep.SUMMARY,
+        "widget": "number_input",
+        "label": "Erwartetes Jahresgehalt / Expected Annual Salary",
+        "help": "Candidate's yearly salary expectation.",
+        "required": False,
+        "source": "user",
+    },
 }
+
 
 def get_fields_for_step(step: WizardStep):
     return [name for name, meta in field_map.items() if meta["step"] == step]
 
+
 def get_fields():
     return list(field_map.keys())
 
-def get_fields_by_group(step: WizardStep, prio_max: int = None):
+
+def get_fields_by_group(
+    step: WizardStep, prio_max: Optional[int] = None
+) -> Dict[str, Any]:
     fields = {name: meta for name, meta in field_map.items() if meta["step"] == step}
     if prio_max is not None:
-        fields = {name: meta for name, meta in fields.items() if meta.get("prio", prio_max) <= prio_max}
+        fields = {
+            name: meta
+            for name, meta in fields.items()
+            if cast(int, meta.get("prio", prio_max)) <= prio_max
+        }
     return fields

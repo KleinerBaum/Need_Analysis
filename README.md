@@ -6,6 +6,7 @@ AI-assisted job description extraction via Streamlit.
 
 - Python 3.10+
 - Packages from `requirements.txt`
+- Plotly for salary visualisation
 
 ## Installation
 
